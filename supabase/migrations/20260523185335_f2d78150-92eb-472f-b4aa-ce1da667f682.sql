@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Public can update journey users by phone" ON public.journey_users;
