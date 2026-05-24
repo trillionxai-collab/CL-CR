@@ -4,8 +4,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createHash } from "crypto";
 import { z } from "zod";
-import { getAdminClient } from "../_lib/supabase";
-import { createSession, buildSetCookieHeader } from "../_lib/session";
+import { getAdminClient } from "../_lib/supabase.js";
+import { createSession, buildSetCookieHeader } from "../_lib/session.js";
 
 const VerifySchema = z.object({
   phone: z.string().trim().min(7).max(20),

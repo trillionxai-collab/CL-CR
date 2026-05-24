@@ -1,7 +1,7 @@
 // Server-only Supabase admin client for Vercel API routes.
 // Uses the service role key which bypasses RLS — NEVER import from frontend code.
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "../../src/integrations/my-supabase/types";
+import type { Database } from "../../src/integrations/my-supabase/types.js";
 
 function build() {
   const url = process.env.VITE_SUPABASE_URL;

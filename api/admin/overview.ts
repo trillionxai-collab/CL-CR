@@ -3,7 +3,7 @@
 // No additional auth beyond the service role key in SUPABASE_SERVICE_ROLE_KEY.
 // Add an ADMIN_SECRET env var + header check here if you want to restrict access.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getAdminClient } from "../_lib/supabase";
+import { getAdminClient } from "../_lib/supabase.js";
 
 const TRACKED_LEVELS = 5;
 

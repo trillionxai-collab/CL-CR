@@ -2,7 +2,7 @@
 // Mirrors the logic from src/lib/session.server.ts, adapted for VercelRequest/Response.
 import { createHash, randomBytes } from "crypto";
 import type { VercelRequest } from "@vercel/node";
-import { getAdminClient } from "./supabase";
+import { getAdminClient } from "./supabase.js";
 
 const SESSION_COOKIE = "hrj_session";
 const SESSION_DAYS = 60;

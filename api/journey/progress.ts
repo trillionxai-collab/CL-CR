@@ -2,8 +2,8 @@
 // POST /api/journey/progress — saves completed level IDs
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { z } from "zod";
-import { getAdminClient } from "../_lib/supabase";
-import { getSessionUser } from "../_lib/session";
+import { getAdminClient } from "../_lib/supabase.js";
+import { getSessionUser } from "../_lib/session.js";
 
 const TRACKED_LEVELS = 5;
 

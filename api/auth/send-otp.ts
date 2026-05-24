@@ -3,7 +3,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createHash } from "crypto";
 import { z } from "zod";
-import { getAdminClient } from "../_lib/supabase";
+import { getAdminClient } from "../_lib/supabase.js";
 
 const WEBHOOK_URL = "https://n8n-642200590.kloudbeansite.com/webhook/sent-otp";
 
