@@ -1,11 +1,19 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
-import { sendOtp, verifyOtp } from "@/lib/auth.functions";
+import { getCurrentUser, sendOtp, verifyOtp } from "@/lib/auth.functions";
 import { COUNTRIES, CountryCodeSelect, type Country } from "@/components/CountryCodeSelect";
 
 export const Route = createFileRoute("/auth")({
+  beforeLoad: async () => {
+    const user = await getCurrentUser();
+    if (!user) return;
+    if (user.onboarding_completed) {
+      throw redirect({ to: "/dashboard" });
+    }
+    throw redirect({ to: "/onboarding" });
+  },
   component: AuthPage,
 });
 

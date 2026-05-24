@@ -5,7 +5,7 @@ import type { VercelRequest } from "@vercel/node";
 import { getAdminClient } from "./supabase.js";
 
 const SESSION_COOKIE = "hrj_session";
-const SESSION_DAYS = 60;
+const SESSION_DAYS = 30;
 const SESSION_MAX_AGE = SESSION_DAYS * 24 * 60 * 60;
 const SLIDING_REFRESH_DAYS = 30;
 
@@ -31,14 +31,47 @@ function parseCookies(header: string | undefined): Record<string, string> {
   );
 }
 
+function shouldUseSecureCookie(req?: VercelRequest) {
+  if (!req) return true;
+
+  const host = req.headers.host ?? "";
+  const isLocalhost = host.includes("localhost") || host.startsWith("127.0.0.1");
+
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const proto = Array.isArray(forwardedProto)
+    ? forwardedProto[0]
+    : forwardedProto ?? "";
+  const isHttps = proto.toLowerCase() === "https";
+
+  // Secure cookies are blocked on plain HTTP localhost.
+  return !isLocalhost || isHttps;
+}
+
+function buildCookieHeaderValue(
+  value: string,
+  maxAgeSeconds: number,
+  req?: VercelRequest,
+) {
+  const parts = [
+    `${SESSION_COOKIE}=${value}`,
+    "HttpOnly",
+    "SameSite=Lax",
+    "Path=/",
+    `Max-Age=${maxAgeSeconds}`,
+    `Expires=${new Date(Date.now() + maxAgeSeconds * 1000).toUTCString()}`,
+  ];
+  if (shouldUseSecureCookie(req)) parts.push("Secure");
+  return parts.join("; ");
+}
+
 /** Build an httpOnly Set-Cookie header value that sets the session token. */
-export function buildSetCookieHeader(token: string) {
-  return `${SESSION_COOKIE}=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_MAX_AGE}`;
+export function buildSetCookieHeader(token: string, req?: VercelRequest) {
+  return buildCookieHeaderValue(token, SESSION_MAX_AGE, req);
 }
 
 /** Build a Set-Cookie header value that immediately expires the session cookie. */
-export function buildClearCookieHeader() {
-  return `${SESSION_COOKIE}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`;
+export function buildClearCookieHeader(req?: VercelRequest) {
+  return buildCookieHeaderValue("", 0, req);
 }
 
 export type SessionUser = {

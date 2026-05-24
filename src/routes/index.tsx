@@ -175,7 +175,7 @@ function Hero() {
           className="mt-10 flex flex-col sm:flex-row items-center gap-3"
         >
           <a
-            href="/auth"
+            href="/dashboard"
             className="group relative inline-flex items-center gap-2 rounded-full bg-warm text-warm-foreground px-7 py-3.5 text-sm font-medium shadow-glow-warm transition hover:scale-[1.02] animate-pulse-glow overflow-hidden"
           >
             <span className="absolute inset-0 shimmer" />
@@ -442,7 +442,7 @@ function Offer() {
               </div>
 
               <a
-                href="/auth"
+                href="/dashboard"
                 className="group mt-10 inline-flex items-center gap-2 rounded-full bg-warm text-warm-foreground px-8 py-4 text-sm font-medium shadow-glow-warm transition hover:scale-[1.02] relative overflow-hidden"
               >
                 <span className="absolute inset-0 shimmer" />

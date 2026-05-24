@@ -98,6 +98,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Ensure a journey_progress row exists for this user
   await supabase.from("journey_progress").upsert({ user_id: user.id }, { onConflict: "user_id" });
 
-  res.setHeader("Set-Cookie", buildSetCookieHeader(sessionToken));
+  res.setHeader("Set-Cookie", buildSetCookieHeader(sessionToken, req));
   return res.json({ ok: true, user });
 }
