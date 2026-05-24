@@ -1,5 +1,4 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import {
@@ -23,16 +22,6 @@ export const Route = createFileRoute("/onboarding")({
     if (!user) throw redirect({ to: "/auth" });
     if (user.onboarding_completed) throw redirect({ to: "/dashboard" });
   },
-  head: () => ({
-    meta: [
-      { title: "Personalize Your Journey — The Human Reconnection" },
-      {
-        name: "description",
-        content:
-          "A personal calibration before entering the journey of awareness, healing and reconnection.",
-      },
-    ],
-  }),
   component: OnboardingPage,
 });
 
@@ -63,7 +52,6 @@ const LIFESTYLES: { id: Lifestyle; label: string; sub: string; Icon: typeof Rock
 
 function OnboardingPage() {
   const navigate = useNavigate();
-  const save = useServerFn(saveOnboarding);
 
   const [dob, setDob] = useState(""); // yyyy-mm-dd
   const [gender, setGender] = useState<Gender | null>(null);
@@ -84,13 +72,11 @@ function OnboardingPage() {
     setLoading(true);
     setError(null);
     try {
-      await save({
-        data: {
-          dateOfBirth: dob,
-          gender: gender!,
-          lifestyle: lifestyle!,
-          openMindConsent: ready,
-        },
+      await saveOnboarding({
+        dateOfBirth: dob,
+        gender: gender!,
+        lifestyle: lifestyle!,
+        openMindConsent: ready,
       });
       setDone(true);
       setTimeout(() => navigate({ to: "/dashboard" }), 2200);

@@ -4,11 +4,8 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
 
-import appCss from "../styles.css?url";
 import { usePWAInstall } from "../hooks/use-pwa-install";
 
 function NotFoundComponent() {
@@ -69,48 +66,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Human Reconnection Journey" },
-      { name: "description", content: "A transformational 6-level cinematic experience exploring disconnection, awareness, healing, and reconnection. Free for a limited time." },
-      { name: "theme-color", content: "#013c4a" },
-      { property: "og:title", content: "The Human Reconnection Journey" },
-      { property: "og:description", content: "A cinematic 6-level transformation. Free for a limited time." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..700;1,9..144,200..600&family=Inter:wght@300;400;500;600&display=swap" },
-      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
-      { rel: "icon", href: "/icon.svg", sizes: "any", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon-180x180.png" },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
+  component: RootComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!api/|src/|@|__|node_modules/|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite"
+}

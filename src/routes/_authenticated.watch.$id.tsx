@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/watch/$id")({
-  head: () => ({ meta: [{ title: "Watch — The Human Reconnection" }] }),
   component: WatchPage,
 });
 

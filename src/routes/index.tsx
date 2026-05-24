@@ -27,21 +27,6 @@ const LOGO_URL = "https://res.cloudinary.com/dzboz4mwb/image/upload/v1779428349/
 
 export const Route = createFileRoute("/")({
   component: Landing,
-  head: () => ({
-    meta: [
-      { title: "The Human Reconnection Journey — A Cinematic Experience" },
-      {
-        name: "description",
-        content:
-          "A transformational 6-level experience exploring disconnection, awareness, healing, and reconnection with self and nature. Free for a limited time.",
-      },
-      { property: "og:title", content: "The Human Reconnection Journey" },
-      {
-        property: "og:description",
-        content: "A cinematic 6-level transformation. Free for a limited time.",
-      },
-    ],
-  }),
 });
 
 function Landing() {

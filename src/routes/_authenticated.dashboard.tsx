@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Lock, Play, Check, Sparkles, X, LogOut } from "lucide-react";
@@ -50,25 +49,12 @@ const STORAGE_KEY = "hrj_completed_levels_v1";
 const TRACKED_LEVELS = LEVELS.length;
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "Your Journey — The Human Reconnection" },
-      {
-        name: "description",
-        content:
-          "A cinematic immersive space for your inner reconnection journey.",
-      },
-    ],
-  }),
   component: DashboardPage,
 });
 
 function DashboardPage() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
-  const out = useServerFn(signOut);
-  const fetchProgress = useServerFn(getJourneyProgress);
-  const persistProgress = useServerFn(saveJourneyProgress);
 
   const [completed, setCompleted] = useState<Set<number>>(new Set());
   const [active, setActive] = useState<Level | null>(null);
@@ -87,7 +73,7 @@ function DashboardPage() {
         legacyIds = [];
       }
 
-      const serverProgress = await fetchProgress();
+      const serverProgress = await getJourneyProgress();
       const mergedIds = Array.from(
         new Set([...(serverProgress.completedLevelIds ?? []), ...legacyIds]),
       )
@@ -105,7 +91,7 @@ function DashboardPage() {
       const serverIds = (serverProgress.completedLevelIds ?? []).join(",");
       const mergedKey = mergedIds.join(",");
       if (mergedKey !== serverIds) {
-        await persistProgress({ data: { completedLevelIds: mergedIds } });
+        await saveJourneyProgress({ completedLevelIds: mergedIds });
       }
     };
 
@@ -114,7 +100,7 @@ function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [fetchProgress, persistProgress]);
+  }, []);
 
   async function markComplete(id: number) {
     const next = new Set(completed);
@@ -127,7 +113,7 @@ function DashboardPage() {
     } catch {}
 
     try {
-      await persistProgress({ data: { completedLevelIds: nextIds } });
+      await saveJourneyProgress({ completedLevelIds: nextIds });
     } catch (error) {
       console.error(error);
     }
@@ -148,7 +134,7 @@ function DashboardPage() {
   }
 
   async function handleSignOut() {
-    await out();
+    await signOut();
     navigate({ to: "/" });
   }
 

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
@@ -7,12 +6,6 @@ import { Search, X, Users, Trophy, Circle, CheckCircle2, Activity } from "lucide
 import { getAdminOverview, type AdminUserRow } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [
-      { title: "Admin — The Human Reconnection Journey" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
   component: AdminDashboard,
 });
 
@@ -42,10 +35,9 @@ function relativeTime(iso: string | null) {
 }
 
 function AdminDashboard() {
-  const fetchOverview = useServerFn(getAdminOverview);
   const { data, isLoading } = useQuery({
     queryKey: ["admin-overview"],
-    queryFn: () => fetchOverview(),
+    queryFn: () => getAdminOverview(),
     refetchInterval: 30_000,
   });
 

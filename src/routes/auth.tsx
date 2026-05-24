@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
@@ -7,16 +6,6 @@ import { sendOtp, verifyOtp } from "@/lib/auth.functions";
 import { COUNTRIES, CountryCodeSelect, type Country } from "@/components/CountryCodeSelect";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "Begin Your Journey — The Human Reconnection Journey" },
-      {
-        name: "description",
-        content:
-          "A transformational experience exploring awareness, healing, consciousness, and reconnection.",
-      },
-    ],
-  }),
   component: AuthPage,
 });
 
@@ -24,8 +13,6 @@ type Stage = "details" | "otp";
 
 function AuthPage() {
   const navigate = useNavigate();
-  const send = useServerFn(sendOtp);
-  const verify = useServerFn(verifyOtp);
 
   const [stage, setStage] = useState<Stage>("details");
   const [first, setFirst] = useState("");
@@ -58,7 +45,7 @@ function AuthPage() {
     setError(null);
     setLoading(true);
     try {
-      await send({ data: { firstName: first, lastName: last, phone: fullPhone } });
+      await sendOtp({ firstName: first, lastName: last, phone: fullPhone });
       setStage("otp");
       setResendIn(30);
       setOtp(["", "", "", ""]);
@@ -77,8 +64,7 @@ function AuthPage() {
     setError(null);
     setLoading(true);
     try {
-      const raw = await verify({ data: { phone: fullPhone, code: c } });
-      const res = raw instanceof Response ? await raw.json() : raw;
+      const res = await verifyOtp({ phone: fullPhone, code: c });
       if (!res.ok) {
         setError(res.error);
         setOtp(["", "", "", ""]);
