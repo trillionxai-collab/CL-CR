@@ -89,12 +89,15 @@ function Hero() {
     <section id="top" ref={ref} className="relative min-h-[100svh] w-full overflow-hidden">
       {/* Cinematic background */}
       <motion.div style={{ y, scale }} className="absolute inset-0">
-        <img
-          src={heroImg}
-          alt="A lone figure standing in a misty ocean at dawn"
-          width={1920}
-          height={1080}
+        <video
+          src="https://res.cloudinary.com/dzboz4mwb/video/upload/q_auto/f_auto/v1779726566/man_in_the_sea_1_ejqdcp.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
           className="h-full w-full object-cover"
+          aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary-deep/40 via-primary/30 to-background" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-primary-deep/30" />
