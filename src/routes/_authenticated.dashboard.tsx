@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Lock, Play, Check, Sparkles, X, LogOut } from "lucide-react";
-import { signOut } from "@/lib/auth.functions";
 import { getJourneyProgress, saveJourneyProgress } from "@/lib/journey.functions";
 
 type Level = {
@@ -133,8 +132,7 @@ function DashboardPage() {
     return "locked";
   }
 
-  async function handleSignOut() {
-    await signOut();
+  function handleGoHome() {
     navigate({ to: "/" });
   }
 
@@ -148,12 +146,12 @@ function DashboardPage() {
           <Sparkles className="h-3 w-3 text-warm" /> The Reconnection
         </span>
         <button
-          onClick={handleSignOut}
-          aria-label="Sign out"
+          onClick={handleGoHome}
+          aria-label="Go to homepage"
           className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-surface-elevated/80 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.22em] text-foreground/80 shadow-soft backdrop-blur transition hover:text-foreground hover:border-primary/20"
         >
           <LogOut className="h-3 w-3" />
-          <span className="hidden sm:inline">Sign out</span>
+          <span className="hidden sm:inline">Home</span>
         </button>
       </header>
 
@@ -174,7 +172,7 @@ function DashboardPage() {
           className="mt-5 font-serif text-4xl sm:text-6xl leading-[1.02] tracking-tight"
         >
           Welcome back,{" "}
-          <span className="text-gradient-warm">{firstName(user)}.</span>
+          <span className="text-[#038a75]">{firstName(user)}.</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -266,6 +264,14 @@ function DashboardPage() {
             level={active}
             completed={completed.has(active.id)}
             onClose={() => setActive(null)}
+            onWatchDelta={async (watchedSecondsDelta) => {
+              if (watchedSecondsDelta <= 0) return;
+              try {
+                await saveJourneyProgress({ watchedSecondsDelta });
+              } catch (error) {
+                console.error(error);
+              }
+            }}
             onComplete={() => {
               void markComplete(active.id);
             }}
@@ -313,7 +319,7 @@ function AnalyticsCard({
       <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">
         {label}
       </p>
-      <p className="mt-3 font-serif text-5xl sm:text-6xl leading-none tracking-tight text-gradient-warm">
+      <p className="mt-3 font-serif text-5xl sm:text-6xl leading-none tracking-tight text-[#038a75]">
         {value}
       </p>
       {accent}
@@ -490,11 +496,11 @@ function FinaleCard({ index, unlocked }: { index: number; unlocked: boolean }) {
       }`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,200,140,0.18),transparent_60%)]" />
-      <span className="relative font-serif text-[11px] uppercase tracking-[0.32em] text-warm/80">
-        Level 06 · The Threshold
+      <span className="relative font-serif text-[11px] uppercase tracking-[0.32em] text-[#038a75]">
+        Level 06 · The Reconnection
       </span>
-      <h3 className="relative mt-3 font-serif text-3xl sm:text-4xl leading-tight tracking-tight">
-        {unlocked ? "The Threshold opens." : "The final chapter is being prepared."}
+      <h3 className="relative mt-3 font-serif text-3xl sm:text-4xl leading-tight tracking-tight text-[#038a75]">
+        {unlocked ? "The Reconnection opens." : "The Reconnection is being prepared."}
       </h3>
       <p className="relative mx-auto mt-3 max-w-md text-[13.5px] text-foreground/74">
         {unlocked
@@ -511,26 +517,116 @@ function VideoPlayer({
   level,
   completed,
   onClose,
+  onWatchDelta,
   onComplete,
 }: {
   level: Level;
   completed: boolean;
   onClose: () => void;
+  onWatchDelta: (watchedSecondsDelta: number) => Promise<void>;
   onComplete: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const pendingWatchSecondsRef = useRef(0);
+  const lastObservedVideoTimeRef = useRef<number | null>(null);
+  const isSeekingRef = useRef(false);
+  const isFlushingRef = useRef(false);
+
+  const collectPlayedVideoSeconds = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const currentVideoTime = Number(video.currentTime || 0);
+    const previousVideoTime = lastObservedVideoTimeRef.current;
+
+    if (
+      previousVideoTime != null &&
+      !video.paused &&
+      !video.ended &&
+      !isSeekingRef.current
+    ) {
+      const delta = currentVideoTime - previousVideoTime;
+      if (delta > 0) {
+        pendingWatchSecondsRef.current += delta;
+      }
+    }
+
+    lastObservedVideoTimeRef.current = currentVideoTime;
+  }, []);
+
+  const flushWatchTime = useCallback(
+    async (force: boolean) => {
+      if (isFlushingRef.current) return;
+
+      const roundedSeconds = Math.floor(pendingWatchSecondsRef.current);
+      const minimumFlushSeconds = force ? 1 : 10;
+      if (roundedSeconds < minimumFlushSeconds) return;
+
+      isFlushingRef.current = true;
+      pendingWatchSecondsRef.current -= roundedSeconds;
+      try {
+        await onWatchDelta(roundedSeconds);
+      } catch {
+        // Restore pending seconds so a later flush can retry.
+        pendingWatchSecondsRef.current += roundedSeconds;
+      } finally {
+        isFlushingRef.current = false;
+      }
+    },
+    [onWatchDelta],
+  );
+
+  const pauseTracking = useCallback(() => {
+    collectPlayedVideoSeconds();
+    lastObservedVideoTimeRef.current = videoRef.current?.currentTime ?? null;
+  }, [collectPlayedVideoSeconds]);
+
+  const startTracking = useCallback(() => {
+    lastObservedVideoTimeRef.current = videoRef.current?.currentTime ?? 0;
+  }, []);
+
+  const startSeeking = useCallback(() => {
+    pauseTracking();
+    isSeekingRef.current = true;
+  }, [pauseTracking]);
+
+  const finishSeeking = useCallback(() => {
+    isSeekingRef.current = false;
+    lastObservedVideoTimeRef.current = videoRef.current?.currentTime ?? 0;
+  }, []);
+
+  const closeWithFlush = useCallback(() => {
+    pauseTracking();
+    void flushWatchTime(true);
+    onClose();
+  }, [flushWatchTime, onClose, pauseTracking]);
+
+  const handleEnded = useCallback(() => {
+    pauseTracking();
+    void flushWatchTime(true);
+    onComplete();
+  }, [flushWatchTime, onComplete, pauseTracking]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") closeWithFlush();
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+
+    const flushInterval = window.setInterval(() => {
+      collectPlayedVideoSeconds();
+      void flushWatchTime(false);
+    }, 5000);
+
     return () => {
+      pauseTracking();
+      void flushWatchTime(true);
+      window.clearInterval(flushInterval);
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [closeWithFlush, collectPlayedVideoSeconds, flushWatchTime, pauseTracking]);
 
   return (
     <motion.div
@@ -539,7 +635,7 @@ function VideoPlayer({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-primary-deep/85 backdrop-blur-2xl"
-      onClick={onClose}
+      onClick={closeWithFlush}
     >
       <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.97 }}
@@ -559,7 +655,7 @@ function VideoPlayer({
             </h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={closeWithFlush}
             aria-label="Close"
             className="grid h-10 w-10 place-items-center rounded-full border border-primary/10 bg-surface-elevated/80 text-foreground/80 shadow-soft backdrop-blur transition hover:text-foreground hover:border-primary/20"
           >
@@ -574,7 +670,13 @@ function VideoPlayer({
             controls
             autoPlay
             playsInline
-            onEnded={onComplete}
+            onTimeUpdate={collectPlayedVideoSeconds}
+            onPlay={startTracking}
+            onPause={pauseTracking}
+            onWaiting={pauseTracking}
+            onSeeking={startSeeking}
+            onSeeked={finishSeeking}
+            onEnded={handleEnded}
             className="aspect-video w-full bg-black"
           />
         </div>
@@ -583,6 +685,8 @@ function VideoPlayer({
           <span>{completed ? "Already completed" : "Marks as complete when finished"}</span>
           <button
             onClick={() => {
+              pauseTracking();
+              void flushWatchTime(true);
               onComplete();
               onClose();
             }}

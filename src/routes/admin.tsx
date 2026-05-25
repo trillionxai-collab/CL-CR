@@ -34,6 +34,13 @@ function relativeTime(iso: string | null) {
   return formatDate(iso);
 }
 
+function formatWatchTime(totalSeconds: number) {
+  const safeSeconds = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+  return `${minutes}m ${seconds}s`;
+}
+
 function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-overview"],
@@ -430,7 +437,7 @@ function UserDrawer({ user, onClose }: { user: AdminUserRow | null; onClose: () 
                 <Field label="Last Active" value={relativeTime(user.last_active_at)} />
                 <Field
                   label="Total Watch Time"
-                  value={`${Math.round(user.total_watch_time / 60)} min`}
+                  value={formatWatchTime(user.total_watch_time)}
                 />
               </Section>
             </div>
