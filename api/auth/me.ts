@@ -1,5 +1,6 @@
 // GET /api/auth/me
-// Returns the currently authenticated user based on the session cookie, or 401.
+// Returns the currently authenticated user based on the session cookie.
+// If no valid session exists, returns { user: null } with 200.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { buildSetCookieHeader, getSessionUser } from "../_lib/session.js";
 
@@ -16,7 +17,7 @@ function getSessionTokenFromCookieHeader(header: string | undefined) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
   const user = await getSessionUser(req);
-  if (!user) return res.status(401).json({ user: null });
+  if (!user) return res.json({ user: null });
 
   const token = getSessionTokenFromCookieHeader(req.headers.cookie as string | undefined);
   if (token) {
