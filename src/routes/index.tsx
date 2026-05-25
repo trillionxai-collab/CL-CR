@@ -150,11 +150,11 @@ function Hero() {
           transition={{ duration: 0.9, delay: 1.2 }}
           className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm"
         >
-          <span className="max-w-2xl text-base md:text-lg leading-relaxed text-red-500 mt-[15px] line-through decoration-2 decoration-red-500/80">₹1,999</span>
+          <span className="max-w-2xl text-base md:text-lg leading-relaxed text-warm/90 mt-[15px] line-through">₹1,999</span>
           <span className="glass-dark rounded-full px-3.5 py-1.5 text-warm font-medium tracking-wide">
             FREE
           </span>
-          <span className="text-green-500">· Limited Time Free Access</span>
+          <span className="text-warm/70">· Limited Time Free Access</span>
         </motion.div>
 
         {/* Countdown */}
