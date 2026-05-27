@@ -668,6 +668,7 @@ function VideoPlayer({
             ref={videoRef}
             src={level.url}
             controls
+            controlsList="nodownload"
             autoPlay
             playsInline
             onTimeUpdate={collectPlayedVideoSeconds}
