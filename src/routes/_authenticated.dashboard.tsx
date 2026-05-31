@@ -230,10 +230,7 @@ function DashboardPage() {
         />
       </section>
 
-      {/* Today's reflection */}
-      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 mt-4">
-        <ReflectionCard />
-      </section>
+      {/* Today's reflection removed */}
 
       {/* Course list */}
       <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 pb-28">
@@ -897,24 +894,4 @@ function ContinueHero({
   );
 }
 
-function ReflectionCard() {
-  const promptTitle = "What part of today already feels meaningful?";
-  const promptBody = "Pause for a moment and let your awareness rest there.";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="relative overflow-hidden rounded-2xl border border-white/6 bg-surface-elevated/85 p-4 shadow-soft backdrop-blur"
-    >
-      <div className="flex items-start gap-4">
-        <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">Today's Reflection</p>
-          <h4 className="mt-1 font-medium text-foreground">{promptTitle}</h4>
-          <p className="mt-2 text-sm text-foreground/60">{promptBody}</p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
+// ReflectionCard removed per user request.
