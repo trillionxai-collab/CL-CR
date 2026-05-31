@@ -111,18 +111,23 @@ function OnboardingPage() {
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.04] p-6 sm:p-9 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.6)] backdrop-blur-2xl space-y-9"
               >
-                {/* DOB */}
-                <Section index={1} title="When did your story begin?" sub="Your date of birth helps us shape the rhythm of your journey.">
-                  <div className="relative">
-                    <CalendarIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-warm/70" />
-                    <input
-                      type="date"
-                      value={dob}
-                      max={today}
-                      min={minDate}
-                      onChange={(e) => setDob(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.03] py-4 pl-12 pr-4 text-base text-foreground outline-none transition focus:border-warm/50 focus:bg-white/[0.06] focus:shadow-[0_0_0_4px_rgba(255,200,140,0.10)] [color-scheme:dark]"
-                    />
+                {/* Lifestyle */}
+                <Section
+                  index={1}
+                  title="Which best describes your current lifestyle?"
+                  sub="We'll calibrate the experience around the season you're in."
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                    {LIFESTYLES.map((l) => (
+                      <LifestyleCard
+                        key={l.id}
+                        active={lifestyle === l.id}
+                        onClick={() => setLifestyle(l.id)}
+                        label={l.label}
+                        sub={l.sub}
+                        Icon={l.Icon}
+                      />
+                    ))}
                   </div>
                 </Section>
 
@@ -141,23 +146,18 @@ function OnboardingPage() {
                   </div>
                 </Section>
 
-                {/* Lifestyle */}
-                <Section
-                  index={3}
-                  title="Which best describes your current lifestyle?"
-                  sub="We'll calibrate the experience around the season you're in."
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                    {LIFESTYLES.map((l) => (
-                      <LifestyleCard
-                        key={l.id}
-                        active={lifestyle === l.id}
-                        onClick={() => setLifestyle(l.id)}
-                        label={l.label}
-                        sub={l.sub}
-                        Icon={l.Icon}
-                      />
-                    ))}
+                {/* DOB */}
+                <Section index={3} title="When did your story begin?" sub="Your date of birth helps us shape the rhythm of your journey.">
+                  <div className="relative">
+                    <CalendarIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-warm/70" />
+                    <input
+                      type="date"
+                      value={dob}
+                      max={today}
+                      min={minDate}
+                      onChange={(e) => setDob(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.03] py-4 pl-12 pr-4 text-base text-foreground outline-none transition focus:border-warm/50 focus:bg-white/[0.06] focus:shadow-[0_0_0_4px_rgba(255,200,140,0.10)] [color-scheme:dark]"
+                    />
                   </div>
                 </Section>
 

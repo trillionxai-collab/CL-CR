@@ -257,10 +257,6 @@ function DashboardPage() {
               />
             );
           })}
-          <FinaleCard
-            index={LEVELS.length}
-            unlocked={completed.size >= LEVELS.length}
-          />
         </ol>
       </section>
 
@@ -485,35 +481,6 @@ function StateChip({
     >
       {label}
     </span>
-  );
-}
-
-function FinaleCard({ index, unlocked }: { index: number; unlocked: boolean }) {
-  return (
-    <motion.li
-      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
-      className={`relative overflow-hidden rounded-[28px] border p-7 sm:p-10 text-center ${
-        unlocked
-          ? "border-warm/40 bg-warm/[0.08] shadow-soft"
-          : "border-primary/10 bg-surface-elevated/76 shadow-soft"
-      }`}
-    >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,200,140,0.18),transparent_60%)]" />
-      <span className="relative font-serif text-[11px] uppercase tracking-[0.32em] text-[#038a75]">
-        Level 06 · The Reconnection
-      </span>
-      <h3 className="relative mt-3 font-serif text-3xl sm:text-4xl leading-tight tracking-tight text-[#038a75]">
-        {unlocked ? "The Reconnection opens." : "The Reconnection is being prepared."}
-      </h3>
-      <p className="relative mx-auto mt-3 max-w-md text-[13.5px] text-foreground/74">
-        {unlocked
-          ? "You've walked through every door. What awaits now is yours alone."
-          : "Complete the five chapters above. The closing experience will reveal itself."}
-      </p>
-    </motion.li>
   );
 }
 
