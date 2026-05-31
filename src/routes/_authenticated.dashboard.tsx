@@ -42,6 +42,12 @@ const LEVELS: Level[] = [
     subtitle: "The medicine within.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300572/LEVEL_-_5_The_Healing_System_u7cnw8.mp4",
   },
+  {
+    id: 6,
+    title: "The Reconnection",
+    subtitle: "Reuniting with your core.",
+    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780222780/LEVEL_6_-_The_Reconnection_bu1wcj.mp4",
+  },
 ];
 
 const STORAGE_KEY = "hrj_completed_levels_v1";
