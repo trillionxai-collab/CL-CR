@@ -19,32 +19,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const supabase = getAdminClient();
   const since = startOfToday();
 
-  const [usersRes, progressRes, sessionsRes] = await Promise.all([
+  const [usersRes, sessionsRes] = await Promise.all([
     supabase
       .from("journey_users")
       .select(
         "id, first_name, last_name, phone_number, gender, lifestyle, date_of_birth, open_mind_consent, onboarding_completed, created_at, last_login_at",
       )
       .order("created_at", { ascending: false }),
-    supabase
-      .from("journey_progress")
-      .select("user_id, current_level, completion_percentage, total_watch_time, updated_at"),
     supabase.from("user_sessions").select("user_id, last_active_at"),
   ]);
 
+  // Attempt to select per-level watchtime columns if they exist.
+  const perLevelCols = Array.from({ length: TRACKED_LEVELS }, (_, i) => `level${i + 1}_watchtime`);
+  let progressRes = await supabase
+    .from("journey_progress")
+    .select(["user_id", "current_level", "completion_percentage", "total_watch_time", "updated_at", ...perLevelCols].join(","));
+
+  if (progressRes.error) {
+    // Fallback to minimal progress columns
+    progressRes = await supabase
+      .from("journey_progress")
+      .select("user_id, current_level, completion_percentage, total_watch_time, updated_at");
+  }
+
   if (usersRes.error) return res.status(500).json({ error: usersRes.error.message });
 
-  const progressByUser = new Map<
-    string,
-    { current_level: number; completion_percentage: number; total_watch_time: number; updated_at: string }
-  >();
+  const progressByUser = new Map<string, any>();
   (progressRes.data ?? []).forEach((p) => {
-    progressByUser.set(p.user_id, {
-      current_level: p.current_level ?? 0,
-      completion_percentage: Number(p.completion_percentage ?? 0),
-      total_watch_time: p.total_watch_time ?? 0,
-      updated_at: p.updated_at,
-    });
+    progressByUser.set(p.user_id, p);
   });
 
   const lastActiveByUser = new Map<string, string>();
@@ -57,10 +59,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const users = (usersRes.data ?? []).map((u) => {
     const p = progressByUser.get(u.id);
-    // Provide a per-level watch-time array (seconds) for admin UI. If the
-    // database later adds a dedicated column (e.g. level_watch_time) we can
-    // wire it here; for now default to zeros so the UI can render consistently.
-    const perLevelTimes = Array.from({ length: TRACKED_LEVELS }).map(() => 0);
+    // Build per-level watch times from columns if present, otherwise default zeros.
+    const perLevelTimes = p
+      ? perLevelCols.map((col) => Number(p[col] ?? 0))
+      : Array.from({ length: TRACKED_LEVELS }).map(() => 0);
     return {
       ...u,
       current_level: Math.max(0, Math.min(p?.current_level ?? 0, TRACKED_LEVELS)),

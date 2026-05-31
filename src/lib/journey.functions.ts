@@ -5,6 +5,7 @@ export type JourneyProgress = {
   current_level: number;
   completion_percentage: number;
   total_watch_time: number;
+  level_watch_times?: number[];
 };
 
 export async function getJourneyProgress(): Promise<JourneyProgress> {
@@ -16,6 +17,7 @@ export async function getJourneyProgress(): Promise<JourneyProgress> {
 export async function saveJourneyProgress(data: {
   completedLevelIds?: number[];
   watchedSecondsDelta?: number;
+  levelId?: number;
 }): Promise<{ ok: true; current_level: number; completion_percentage: number; total_watch_time: number }> {
   const res = await fetch("/api/journey/progress", {
     method: "POST",

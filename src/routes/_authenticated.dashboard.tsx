@@ -52,7 +52,7 @@ const LEVELS: Level[] = [
     id: 6,
     title: "The Reconnection",
     subtitle: "Reuniting with your core.",
-    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780222780/LEVEL_6_-_The_Reconnection_bu1wcj.mp4",
+    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780262992/LEVEL_6_-_THE_RECONNECTION_1_mrxd4e.mp4",
     duration: "18:05",
   },
 ];
@@ -328,7 +328,7 @@ function DashboardPage() {
             onWatchDelta={async (watchedSecondsDelta) => {
               if (watchedSecondsDelta <= 0) return;
               try {
-                await saveJourneyProgress({ watchedSecondsDelta });
+                await saveJourneyProgress({ watchedSecondsDelta, levelId: active.id });
               } catch (error) {
                 console.error(error);
               }
