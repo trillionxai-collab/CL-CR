@@ -130,6 +130,7 @@ function DashboardPage() {
   }, [completed]);
 
   const progressPct = Math.round((completed.size / TRACKED_LEVELS) * 100);
+  const activeIndex = active ? LEVELS.findIndex((lvl) => lvl.id === active.id) : -1;
 
   function stateOf(id: number): "completed" | "current" | "unlocked" | "locked" {
     if (completed.has(id)) return "completed";
@@ -266,6 +267,16 @@ function DashboardPage() {
             level={active}
             completed={completed.has(active.id)}
             onClose={() => setActive(null)}
+            onPrev={
+              activeIndex > 0
+                ? () => setActive(LEVELS[activeIndex - 1])
+                : undefined
+            }
+            onNext={
+              activeIndex >= 0 && activeIndex < LEVELS.length - 1
+                ? () => setActive(LEVELS[activeIndex + 1])
+                : undefined
+            }
             onWatchDelta={async (watchedSecondsDelta) => {
               if (watchedSecondsDelta <= 0) return;
               try {
@@ -490,12 +501,16 @@ function VideoPlayer({
   level,
   completed,
   onClose,
+  onPrev,
+  onNext,
   onWatchDelta,
   onComplete,
 }: {
   level: Level;
   completed: boolean;
   onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
   onWatchDelta: (watchedSecondsDelta: number) => Promise<void>;
   onComplete: () => void;
 }) {
@@ -568,6 +583,16 @@ function VideoPlayer({
     lastObservedVideoTimeRef.current = videoRef.current?.currentTime ?? 0;
   }, []);
 
+  const navigateWithFlush = useCallback(
+    async (navigateAction?: () => void) => {
+      if (!navigateAction) return;
+      pauseTracking();
+      await flushWatchTime(true);
+      navigateAction();
+    },
+    [flushWatchTime, pauseTracking],
+  );
+
   const closeWithFlush = useCallback(() => {
     pauseTracking();
     void flushWatchTime(true);
@@ -607,7 +632,7 @@ function VideoPlayer({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-primary-deep/85 backdrop-blur-2xl"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-auto py-6 bg-primary-deep/85 backdrop-blur-2xl"
       onClick={closeWithFlush}
     >
       <motion.div
@@ -616,27 +641,47 @@ function VideoPlayer({
         exit={{ opacity: 0, y: 30, scale: 0.97 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl px-4 sm:px-6"
+        className="relative w-full max-w-4xl px-4 sm:px-6 max-h-[calc(100vh-80px)]"
       >
-        <div className="mb-4 flex items-end justify-between gap-4">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.32em] text-warm/85">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-warm/90">
               Level 0{level.id}
             </p>
-            <h2 className="mt-1 font-serif text-2xl sm:text-3xl leading-tight tracking-tight text-foreground">
+            <h2 className="mt-1 font-serif text-2xl sm:text-3xl leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
               {level.title}
             </h2>
           </div>
-          <button
-            onClick={closeWithFlush}
-            aria-label="Close"
-            className="grid h-10 w-10 place-items-center rounded-full border border-primary/10 bg-surface-elevated/80 text-foreground/80 shadow-soft backdrop-blur transition hover:text-foreground hover:border-primary/20"
-          >
-            <X className="h-4 w-4" />
-          </button>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={!onPrev}
+              onClick={() => void navigateWithFlush(onPrev)}
+              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-40 disabled:border-warm/30 disabled:bg-warm/10 disabled:text-warm/30 border-warm/40 bg-warm/15 text-warm shadow-soft hover:border-warm/60 hover:bg-warm/20"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              disabled={!onNext}
+              onClick={() => void navigateWithFlush(onNext)}
+              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-40 disabled:border-warm/30 disabled:bg-warm/10 disabled:text-warm/30 border-warm/40 bg-warm/15 text-warm shadow-soft hover:border-warm/60 hover:bg-warm/20"
+            >
+              Next
+            </button>
+          </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black shadow-[0_50px_140px_-30px_rgba(0,0,0,0.7)]">
+        <button
+          onClick={closeWithFlush}
+          aria-label="Close"
+          className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-primary/10 bg-surface-elevated/90 text-foreground/90 shadow-soft backdrop-blur transition hover:text-foreground hover:border-primary/20"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black shadow-[0_50px_140px_-30px_rgba(0,0,0,0.7)] max-h-[calc(100vh-220px)]">
           <video
             ref={videoRef}
             src={level.url}
@@ -651,7 +696,7 @@ function VideoPlayer({
             onSeeking={startSeeking}
             onSeeked={finishSeeking}
             onEnded={handleEnded}
-            className="aspect-video w-full bg-black"
+            className="w-full h-full object-contain bg-black"
           />
         </div>
 
