@@ -65,7 +65,7 @@ function Nav() {
             <a href="#community" className="hover:text-foreground transition">Community</a>
           </nav>
           <a
-            href="#offer"
+            href="/dashboard"
             className="group inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-[13px] font-medium shadow-soft hover:bg-primary-deep transition"
           >
             Begin
@@ -167,7 +167,7 @@ function Hero() {
           transition={{ duration: 0.9, delay: 1.4 }}
           className="mt-8 text-warm"
         >
-          <Countdown minutes={10} />
+          <Countdown minutes={1440} />
         </motion.div>
 
         {/* CTAs */}
@@ -179,7 +179,7 @@ function Hero() {
         >
           <a
             href="/dashboard"
-            className="group relative inline-flex items-center gap-2 rounded-full bg-warm text-warm-foreground px-7 py-3.5 text-sm font-medium shadow-glow-warm transition hover:scale-[1.02] animate-pulse-glow overflow-hidden"
+            className="group relative inline-flex items-center gap-2 rounded-full bg-warm text-warm-foreground px-7 py-3.5 text-sm font-medium shadow-glow-warm transition hover:scale-[1.02] animate-pulse-glow animate-vibrate-sides overflow-hidden"
           >
             <span className="absolute inset-0 shimmer" />
             <span className="relative">Begin The Journey</span>
@@ -441,7 +441,7 @@ function Offer() {
               </p>
 
               <div className="mt-10">
-                <Countdown minutes={10} />
+                <Countdown minutes={1440} />
               </div>
 
               <a

@@ -8,11 +8,14 @@ export function Countdown({ minutes = 10, className = "" }: { minutes?: number; 
     return () => clearInterval(id);
   }, []);
 
-  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
   const s = String(seconds % 60).padStart(2, "0");
 
   return (
     <div className={`inline-flex items-center gap-2 font-mono tabular-nums ${className}`}>
+      <TimeCell value={h} label="hr" />
+      <span className="text-2xl opacity-40">:</span>
       <TimeCell value={m} label="min" />
       <span className="text-2xl opacity-40">:</span>
       <TimeCell value={s} label="sec" />

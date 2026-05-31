@@ -9,6 +9,7 @@ type Level = {
   title: string;
   subtitle: string;
   url: string;
+  duration?: string;
 };
 
 const LEVELS: Level[] = [
@@ -17,38 +18,54 @@ const LEVELS: Level[] = [
     title: "A Better Way to Feel",
     subtitle: "The opening breath.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300554/LEVEL_-_1_A_Better_Way_to_Feel_mjjgis.mp4",
+    duration: "12:34",
   },
   {
     id: 2,
     title: "Is Everything Okay?",
     subtitle: "A quiet inquiry inward.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300561/LEVEL_-_2_Is_Everything_Okay__lbuja7.mp4",
+    duration: "10:08",
   },
   {
     id: 3,
     title: "The World Has Changed",
     subtitle: "Witnessing the shift.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300566/LEVEL_-_3_The_world_has_changed_qun1nj.mp4",
+    duration: "14:02",
   },
   {
     id: 4,
     title: "The Hidden Damage",
     subtitle: "What lives beneath the surface.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300551/LEVEL_-_4_The_Hidden_Damage_yszd35.mp4",
+    duration: "11:45",
   },
   {
     id: 5,
     title: "The Healing System",
     subtitle: "The medicine within.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300572/LEVEL_-_5_The_Healing_System_u7cnw8.mp4",
+    duration: "13:20",
   },
   {
     id: 6,
     title: "The Reconnection",
     subtitle: "Reuniting with your core.",
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780222780/LEVEL_6_-_The_Reconnection_bu1wcj.mp4",
+    duration: "18:05",
   },
 ];
+
+function formatDuration(seconds: number) {
+  const mm = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const ss = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${mm}:${ss}`;
+}
 
 const STORAGE_KEY = "hrj_completed_levels_v1";
 const TRACKED_LEVELS = LEVELS.length;
@@ -63,6 +80,7 @@ function DashboardPage() {
 
   const [completed, setCompleted] = useState<Set<number>>(new Set());
   const [active, setActive] = useState<Level | null>(null);
+  const [durations, setDurations] = useState<Record<number, string>>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -132,6 +150,16 @@ function DashboardPage() {
   const progressPct = Math.round((completed.size / TRACKED_LEVELS) * 100);
   const activeIndex = active ? LEVELS.findIndex((lvl) => lvl.id === active.id) : -1;
 
+  function handleLoadedMetadata(id: number, e: any) {
+    try {
+      const seconds = Math.floor((e.currentTarget?.duration || 0) as number);
+      if (!Number.isFinite(seconds)) return;
+      setDurations((prev) => ({ ...prev, [id]: formatDuration(seconds) }));
+    } catch (err) {
+      // ignore
+    }
+  }
+
   function stateOf(id: number): "completed" | "current" | "unlocked" | "locked" {
     if (completed.has(id)) return "completed";
     if (id === currentLevelId) return "current";
@@ -163,99 +191,120 @@ function DashboardPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-12 sm:pt-20 text-center">
+      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-8 text-left">
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
-          className="text-[11px] uppercase tracking-[0.36em] text-foreground/70"
+          transition={{ duration: 0.8 }}
+          className="text-sm text-foreground/70"
         >
-          {greeting()} · {firstName(user)}
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 16, filter: "blur(10px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="mt-5 font-serif text-4xl sm:text-6xl leading-[1.02] tracking-tight"
-        >
-          Welcome back,{" "}
-          <span className="text-[#038a75]">{firstName(user)}.</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, delay: 0.3 }}
-          className="mx-auto mt-5 max-w-xl text-[15px] sm:text-base leading-relaxed text-foreground/78"
-        >
-          Your journey toward reconnection continues. Breathe in — the next
-          threshold is ready when you are.
+          Welcome back, {firstName(user)}
         </motion.p>
       </section>
 
-      {/* Analytics */}
-      <section className="relative z-10 mx-auto mt-12 sm:mt-16 grid w-full max-w-3xl grid-cols-1 gap-3 px-5 sm:grid-cols-2 sm:gap-5">
+      {/* Progress row */}
+      <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 flex items-center justify-start">
         <AnalyticsCard
           label="Journey Progress"
           value={`${progressPct}%`}
           accent={
-            <div className="relative mt-4 h-[3px] w-full overflow-hidden rounded-full bg-primary/10">
-              <motion.span
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-warm/70 via-warm to-warm/70 shadow-[0_0_20px_rgba(255,200,140,0.7)]"
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              />
+            <div className="mt-3">
+              <div className="flex items-center gap-2">
+                {Array.from({ length: TRACKED_LEVELS }).map((_, i) => {
+                  const done = i < completed.size;
+                  return (
+                    <span
+                      key={i}
+                      className={`h-2.5 w-2.5 rounded-full ${done ? "bg-warm shadow-[0_0_8px_rgba(255,200,140,0.7)]" : "bg-primary/12"}`}
+                    />
+                  );
+                })}
+              </div>
             </div>
           }
-          delay={0.1}
-        />
-        <AnalyticsCard
-          label="Levels Completed"
-          value={`${completed.size}/${TRACKED_LEVELS}`}
-          accent={
-            <div className="mt-4 flex gap-1.5">
-              {Array.from({ length: TRACKED_LEVELS }).map((_, i) => {
-                const done = i < completed.size;
-                return (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + i * 0.06 }}
-                    className={`h-1.5 flex-1 rounded-full ${
-                      done
-                        ? "bg-warm shadow-[0_0_12px_rgba(255,200,140,0.7)]"
-                        : "bg-primary/12"
-                    }`}
-                  />
-                );
-              })}
-            </div>
-          }
-          delay={0.2}
+          delay={0.05}
         />
       </section>
 
-      {/* Journey */}
-      <section className="relative z-10 mx-auto mt-20 sm:mt-28 w-full max-w-3xl px-5 pb-32">
-        <div className="mb-9 flex items-baseline gap-3">
-          <span className="font-serif text-[11px] uppercase tracking-[0.32em] text-warm/85">
-            The Journey
-          </span>
-          <div className="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent" />
+      {/* Next level indicator (moved above Course) */}
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 mt-4">
+        <div className="text-sm text-foreground/60">Next: <span className="font-medium text-foreground">{LEVELS[currentLevelId - 1]?.title || "—"}</span></div>
+      </div>
+
+      {/* Course list */}
+      <section className="relative z-10 mx-auto mt-8 w-full max-w-3xl px-5 pb-20">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-serif text-lg tracking-tight">Course</h3>
+          <div className="text-sm text-foreground/60">{completed.size}/{TRACKED_LEVELS} completed</div>
         </div>
 
-        <ol className="space-y-5 sm:space-y-6">
+        <ol className="divide-y divide-border/60 rounded-lg border border-white/5 bg-surface/60">
           {LEVELS.map((lvl, i) => {
             const state = stateOf(lvl.id);
             return (
-              <LevelCard
+              <li
                 key={lvl.id}
-                level={lvl}
-                state={state}
-                index={i}
-                onOpen={() => setActive(lvl)}
-              />
+                className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-white/[0.02]"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-20 h-12 rounded overflow-hidden bg-black flex-shrink-0 relative">
+                    <video
+                      src={lvl.url}
+                      muted
+                      playsInline
+                      loop
+                      preload="metadata"
+                      onLoadedMetadata={(e) => handleLoadedMetadata(lvl.id, e)}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute left-2 bottom-1 rounded px-1.5 py-0.5 text-xs font-medium bg-black/60 text-white">{durations[lvl.id] ?? lvl.duration ?? '00:00'}</div>
+                  </div>
+
+                  <div className="min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => setActive(lvl)}
+                      className="text-left w-full"
+                    >
+                      <div className="truncate font-medium text-foreground">{lvl.title}</div>
+                      <div className="truncate text-[13px] text-foreground/60">{lvl.subtitle}</div>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {state === "locked" ? (
+                    <div className="inline-flex items-center gap-2 rounded-sm border border-border/60 bg-surface/60 px-3 py-1 text-sm text-foreground/60">
+                      <Lock className="h-4 w-4" />
+                      <span>Locked</span>
+                    </div>
+                  ) : state === "completed" ? (
+                    <button
+                      type="button"
+                      onClick={() => setActive(lvl)}
+                      className="inline-flex items-center gap-2 rounded-sm border border-[#038a75] bg-[#038a75] px-3 py-1 text-white font-medium shadow-sm hover:bg-[#026c57]"
+                    >
+                      Watch again
+                    </button>
+                  ) : state === "current" ? (
+                    <button
+                      type="button"
+                      onClick={() => setActive(lvl)}
+                      className="inline-flex items-center gap-2 rounded-sm border border-[#2f9e44] bg-[#2f9e44] px-3 py-1 text-white font-medium shadow-sm hover:bg-[#247b37]"
+                    >
+                      Resume
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setActive(lvl)}
+                      className="inline-flex items-center gap-2 rounded-sm border border-primary/10 bg-white/[0.04] px-3 py-1 text-foreground/90 hover:bg-white/[0.06]"
+                    >
+                      Open
+                    </button>
+                  )}
+                </div>
+              </li>
             );
           })}
         </ol>
