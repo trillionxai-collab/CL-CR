@@ -5,7 +5,7 @@ import { z } from "zod";
 import { getAdminClient } from "../_lib/supabase.js";
 import { getSessionUser } from "../_lib/session.js";
 
-const TRACKED_LEVELS = 5;
+const TRACKED_LEVELS = 6;
 
 const SaveSchema = z.object({
   completedLevelIds: z.array(z.number().int().min(1).max(TRACKED_LEVELS)).optional(),

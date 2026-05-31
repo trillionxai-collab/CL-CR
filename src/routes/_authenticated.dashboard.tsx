@@ -176,7 +176,7 @@ function DashboardPage() {
       <CinematicBackdrop />
 
       {/* top bar */}
-      <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 pt-6 sm:pt-8">
+      <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 pt-4 sm:pt-6">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-surface-elevated/80 px-3 py-1 text-[10px] uppercase tracking-[0.32em] text-foreground/80 shadow-soft backdrop-blur">
           <Sparkles className="h-3 w-3 text-warm" /> The Reconnection
         </span>
@@ -190,64 +190,74 @@ function DashboardPage() {
         </button>
       </header>
 
-      {/* Hero */}
-      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-8 text-left">
-        <motion.p
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-sm text-foreground/70"
-        >
-          Welcome back, {firstName(user)}
-        </motion.p>
+      {/* Hero (with progress ring) */}
+      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <motion.p
+              initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-sm text-[#3aa87a] truncate"
+            >
+              Welcome back, {firstName(user)}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.06 }}
+              className="mt-1 text-xs text-foreground/60"
+            >
+              A gentle nudge — one mindful step at a time.
+            </motion.p>
+          </div>
+
+          <div className="flex-shrink-0 ml-4">
+            <ProgressRing percent={progressPct} size={64} stroke={6} />
+          </div>
+        </div>
       </section>
 
-      {/* Progress row */}
-      <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 flex items-center justify-start">
-        <AnalyticsCard
-          label="Journey Progress"
-          value={`${progressPct}%`}
-          accent={
-            <div className="mt-3">
-              <div className="flex items-center gap-2">
-                {Array.from({ length: TRACKED_LEVELS }).map((_, i) => {
-                  const done = i < completed.size;
-                  return (
-                    <span
-                      key={i}
-                      className={`h-2.5 w-2.5 rounded-full ${done ? "bg-warm shadow-[0_0_8px_rgba(255,200,140,0.7)]" : "bg-primary/12"}`}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          }
-          delay={0.05}
+      {/* Continue Journey hero */}
+      <section className="relative z-10 mx-auto mt-4 w-full max-w-3xl px-5">
+        <ContinueHero
+          completedCount={completed.size}
+          currentTitle={LEVELS[currentLevelId - 1]?.title}
+          onContinue={() => {
+            const next = LEVELS.find((l) => l.id === currentLevelId);
+            if (next) setActive(next);
+          }}
         />
       </section>
 
-      {/* Next level indicator (moved above Course) */}
-      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 mt-4">
-        <div className="text-sm text-foreground/60">Next: <span className="font-medium text-foreground">{LEVELS[currentLevelId - 1]?.title || "—"}</span></div>
-      </div>
+      {/* Today's reflection */}
+      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 mt-4">
+        <ReflectionCard />
+      </section>
 
       {/* Course list */}
-      <section className="relative z-10 mx-auto mt-8 w-full max-w-3xl px-5 pb-20">
+      <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 pb-28">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-serif text-lg tracking-tight">Course</h3>
+          <h3 className="font-serif text-lg tracking-tight">Course Levels</h3>
           <div className="text-sm text-foreground/60">{completed.size}/{TRACKED_LEVELS} completed</div>
         </div>
 
-        <ol className="divide-y divide-border/60 rounded-lg border border-white/5 bg-surface/60">
+        <div className="space-y-3">
           {LEVELS.map((lvl, i) => {
             const state = stateOf(lvl.id);
+            const isCurrent = state === "current";
+            const isCompleted = state === "completed";
             return (
-              <li
+              <motion.li
                 key={lvl.id}
-                className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-white/[0.02]"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.6, delay: i * 0.04 }}
+                className={`flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/5 bg-surface-elevated/85 shadow-soft backdrop-blur ${isCurrent ? "ring-1 ring-warm/20" : ""}`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-20 h-12 rounded overflow-hidden bg-black flex-shrink-0 relative">
+                  <div className={`w-28 h-16 rounded overflow-hidden bg-black flex-shrink-0 relative ${isCurrent ? "scale-[1.02] shadow-[0_18px_60px_-24px_rgba(255,180,120,0.22)]" : ""}`}>
                     <video
                       src={lvl.url}
                       muted
@@ -258,56 +268,48 @@ function DashboardPage() {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute left-2 bottom-1 rounded px-1.5 py-0.5 text-xs font-medium bg-black/60 text-white">{durations[lvl.id] ?? lvl.duration ?? '00:00'}</div>
+                    {isCompleted && (
+                      <span className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-warm/20 text-warm backdrop-blur">
+                        <Check className="h-4 w-4" />
+                      </span>
+                    )}
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <button
                       type="button"
                       onClick={() => setActive(lvl)}
                       className="text-left w-full"
                     >
-                      <div className="truncate font-medium text-foreground">{lvl.title}</div>
-                      <div className="truncate text-[13px] text-foreground/60">{lvl.subtitle}</div>
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-foreground/60">Level {lvl.id}</div>
+                        <div className="truncate font-medium text-foreground flex items-center gap-2">
+                          {lvl.title}
+                        </div>
+                        <div className="truncate text-[13px] text-foreground/60">{lvl.subtitle}</div>
                     </button>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   {state === "locked" ? (
-                    <div className="inline-flex items-center gap-2 rounded-sm border border-border/60 bg-surface/60 px-3 py-1 text-sm text-foreground/60">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-surface/60 px-3 py-1 text-sm text-foreground/60">
                       <Lock className="h-4 w-4" />
-                      <span>Locked</span>
                     </div>
-                  ) : state === "completed" ? (
-                    <button
-                      type="button"
-                      onClick={() => setActive(lvl)}
-                      className="inline-flex items-center gap-2 rounded-sm border border-[#038a75] bg-[#038a75] px-3 py-1 text-white font-medium shadow-sm hover:bg-[#026c57]"
-                    >
-                      Watch again
-                    </button>
-                  ) : state === "current" ? (
-                    <button
-                      type="button"
-                      onClick={() => setActive(lvl)}
-                      className="inline-flex items-center gap-2 rounded-sm border border-[#2f9e44] bg-[#2f9e44] px-3 py-1 text-white font-medium shadow-sm hover:bg-[#247b37]"
-                    >
-                      Resume
-                    </button>
                   ) : (
                     <button
                       type="button"
                       onClick={() => setActive(lvl)}
-                      className="inline-flex items-center gap-2 rounded-sm border border-primary/10 bg-white/[0.04] px-3 py-1 text-foreground/90 hover:bg-white/[0.06]"
+                      aria-label={isCompleted ? "Watch again" : isCurrent ? "Resume" : "Open"}
+                      className={`grid h-9 w-9 place-items-center rounded-full border ${isCurrent ? "border-[#3aa87a] bg-[#3aa87a] text-white" : isCompleted ? "border-[#3aa87a]/30 bg-[#3aa87a]/12 text-[#0f2b20]" : "border-primary/10 bg-white/[0.04] text-foreground/90"}`}
                     >
-                      Open
+                      <Play className="h-4 w-4" />
                     </button>
                   )}
                 </div>
-              </li>
+              </motion.li>
             );
           })}
-        </ol>
+        </div>
       </section>
 
       <AnimatePresence>
@@ -801,5 +803,118 @@ function CinematicBackdrop() {
         }}
       />
     </>
+  );
+}
+
+function ProgressRing({ percent, size = 56, stroke = 6 }: { percent: number; size?: number; stroke?: number }) {
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+  const offset = circumference * (1 - clamped / 100);
+
+  return (
+    <div className="relative" style={{ width: size, height: size }} aria-hidden>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={stroke}
+          stroke="rgba(255,255,255,0.06)"
+          fill="none"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={stroke}
+          stroke="#3aa87a"
+          strokeLinecap="round"
+          fill="none"
+          strokeDasharray={`${circumference}`}
+          strokeDashoffset={`${offset}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          style={{ transition: "stroke-dashoffset 0.6s ease" }}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center text-sm font-semibold text-foreground">
+        {clamped}%
+      </div>
+    </div>
+  );
+}
+
+function ContinueHero({
+  completedCount,
+  currentTitle,
+  onContinue,
+}: {
+  completedCount: number;
+  currentTitle?: string | undefined;
+  onContinue: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      style={{
+        backgroundImage: 'url("https://res.cloudinary.com/dzboz4mwb/image/upload/q_auto/f_auto/v1780246710/ancient_widdoom_1_piozb5.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+      className="relative overflow-hidden rounded-3xl border border-primary/10 bg-surface-elevated/90 p-5 sm:p-6 shadow-soft backdrop-blur"
+    >
+      <div className="absolute inset-0 bg-white/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-warm/8 via-primary-deep/6 to-transparent blur-xl" />
+      <div className="relative z-10 flex items-center gap-6">
+        <div className="flex-1">
+          <div className="relative inline-block w-auto max-w-[92%] sm:max-w-[60%]">
+            <div className="absolute inset-0 rounded-2xl bg-white/40 backdrop-blur-sm pointer-events-none" />
+            <div className="relative z-10 p-3 sm:p-4">
+              <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">Continue Journey</p>
+              <h3 className="mt-2 font-serif text-2xl text-foreground">{currentTitle ?? "Your journey"}</h3>
+              <p className="mt-2 text-sm text-foreground/60">Pick up where you left off and keep going.</p>
+
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  onClick={onContinue}
+                  className="inline-flex items-center gap-2 rounded-full border border-[#3aa87a] bg-[#3aa87a] px-3 py-2 text-white shadow-soft"
+                >
+                  <Play className="h-4 w-4" />
+                  Continue
+                </button>
+
+                <div className="text-sm text-foreground/60">{completedCount}/{TRACKED_LEVELS} completed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* right column removed - progress moved to top hero */}
+      </div>
+    </motion.div>
+  );
+}
+
+function ReflectionCard() {
+  const promptTitle = "What part of today already feels meaningful?";
+  const promptBody = "Pause for a moment and let your awareness rest there.";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="relative overflow-hidden rounded-2xl border border-white/6 bg-surface-elevated/85 p-4 shadow-soft backdrop-blur"
+    >
+      <div className="flex items-start gap-4">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">Today's Reflection</p>
+          <h4 className="mt-1 font-medium text-foreground">{promptTitle}</h4>
+          <p className="mt-2 text-sm text-foreground/60">{promptBody}</p>
+        </div>
+      </div>
+    </motion.div>
   );
 }

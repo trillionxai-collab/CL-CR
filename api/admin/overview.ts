@@ -5,7 +5,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getAdminClient } from "../_lib/supabase.js";
 
-const TRACKED_LEVELS = 5;
+const TRACKED_LEVELS = 6;
 
 function startOfToday() {
   const d = new Date();
@@ -57,11 +57,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const users = (usersRes.data ?? []).map((u) => {
     const p = progressByUser.get(u.id);
+    // Provide a per-level watch-time array (seconds) for admin UI. If the
+    // database later adds a dedicated column (e.g. level_watch_time) we can
+    // wire it here; for now default to zeros so the UI can render consistently.
+    const perLevelTimes = Array.from({ length: TRACKED_LEVELS }).map(() => 0);
     return {
       ...u,
       current_level: Math.max(0, Math.min(p?.current_level ?? 0, TRACKED_LEVELS)),
       completion_percentage: p?.completion_percentage ?? 0,
       total_watch_time: p?.total_watch_time ?? 0,
+      level_watch_times: perLevelTimes,
       last_active_at: lastActiveByUser.get(u.id) ?? u.last_login_at ?? null,
     };
   });

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
 
-const TOTAL_LEVELS = 5;
+const TOTAL_LEVELS = 6;
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -386,6 +386,7 @@ function UserDrawer({ user, onClose }: { user: AdminUserRow | null; onClose: () 
                     const lvl = i + 1;
                     const done = lvl < user.current_level || user.completion_percentage >= 100;
                     const current = lvl === user.current_level && !done;
+                    const durationSeconds = user.level_watch_times?.[i] ?? 0;
                     return (
                       <div
                         key={lvl}
@@ -407,9 +408,14 @@ function UserDrawer({ user, onClose }: { user: AdminUserRow | null; onClose: () 
                               }`}
                             />
                           )}
-                          <span className={done ? "text-foreground" : "text-muted-foreground"}>
-                            Level {lvl}
-                          </span>
+                          <div>
+                            <div className={done ? "text-foreground" : "text-muted-foreground"}>
+                              Level {lvl}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-0.5">
+                              {formatWatchTime(durationSeconds)}
+                            </div>
+                          </div>
                         </div>
                         <span className="text-xs uppercase tracking-wider text-muted-foreground">
                           {done ? "Completed" : current ? "In progress" : "Locked"}

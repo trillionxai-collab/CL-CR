@@ -15,6 +15,7 @@ export type AdminUserRow = {
   current_level: number;
   completion_percentage: number;
   total_watch_time: number;
+  level_watch_times?: number[];
   last_active_at: string | null;
 };
 
