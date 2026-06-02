@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
 
-const TOTAL_LEVELS = 6;
+const TOTAL_LEVELS = 7;
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";

@@ -269,6 +269,7 @@ function Journey() {
     { n: "04", t: "The Hidden Damage", d: "The invisible wounds we carry without knowing their names.", icon: Eye },
     { n: "05", t: "The Healing System", d: "Ancient and modern wisdom — the architecture of return.", icon: Sparkles },
     { n: "06", t: "The Reconnection", d: "Self. Nature. Consciousness. Coming home — fully, finally.", icon: Leaf },
+    { n: "07", t: "The Conscious Living", d: "Practice and integration.", icon: Sun },
   ];
 
   return (
@@ -283,7 +284,7 @@ function Journey() {
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-center text-gradient-warm">
-            Six levels. <br />One descent inward.
+            Seven levels. <br />One descent inward.
           </h2>
         </Reveal>
         <Reveal delay={0.2}>

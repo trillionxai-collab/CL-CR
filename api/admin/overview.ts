@@ -5,7 +5,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getAdminClient } from "../_lib/supabase.js";
 
-const TRACKED_LEVELS = 6;
+const TRACKED_LEVELS = 7;
 
 function startOfToday() {
   const d = new Date();

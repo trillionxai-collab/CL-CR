@@ -55,6 +55,12 @@ const LEVELS: Level[] = [
     url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780262992/LEVEL_6_-_THE_RECONNECTION_1_mrxd4e.mp4",
     duration: "18:05",
   },
+  {
+    id: 7,
+    title: "The Conscious Living",
+    subtitle: "Practice and integration.",
+    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780413207/Level_7_-_The_Conscious_Living_dogzlc.mp4",
+  },
 ];
 
 function formatDuration(seconds: number) {
