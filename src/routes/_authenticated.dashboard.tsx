@@ -59,7 +59,7 @@ const LEVELS: Level[] = [
     id: 7,
     title: "The Conscious Living",
     subtitle: "Practice and integration.",
-    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780413207/Level_7_-_The_Conscious_Living_dogzlc.mp4",
+    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780424932/Level_7_-_The_Conscious_Living_ht2hqm.mp4",
   },
 ];
 
