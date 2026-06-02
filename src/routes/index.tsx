@@ -34,11 +34,11 @@ function Landing() {
     <main className="relative overflow-x-hidden bg-background text-foreground">
       <Nav />
       <Hero />
+      <Offer />
       <Disconnect />
       <Journey />
       <Discover />
       <WhyMatters />
-      <Offer />
       <Community />
       <FinalCTA />
       <Footer />
@@ -214,47 +214,36 @@ function Hero() {
 
 /* ---------------- DISCONNECT ---------------- */
 function Disconnect() {
-  const items = [
-    { icon: Waves, label: "Overstimulation" },
-    { icon: Brain, label: "Mental Fatigue" },
-    { icon: HeartPulse, label: "Emotional Numbness" },
-    { icon: Sun, label: "Loss of Stillness" },
-    { icon: Moon, label: "Restless Sleep" },
-    { icon: Leaf, label: "Nature Disconnect" },
-  ];
-
   return (
     <section className="relative py-32 md:py-44 px-5">
       <div className="absolute inset-0 bg-gradient-warm" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[500px] w-[500px] bg-gradient-glow rounded-full opacity-50" />
       <div className="relative mx-auto max-w-5xl">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-secondary text-center">Chapter One</p>
+        <Reveal delay={0.05}>
+          <div className="mt-6 flex justify-center">
+            <img
+              src="https://res.cloudinary.com/dzboz4mwb/image/upload/v1780419512/Thampi_Nagarjuna_2_1_agveqy.png"
+              alt="Thampi Nagarjuna"
+              className="h-32 w-32 rounded-full object-cover shadow-elevated"
+            />
+          </div>
         </Reveal>
         <Reveal delay={0.1}>
+          <p className="mt-4 text-xs uppercase tracking-[0.3em] text-secondary text-center">Thampi Nagarjuna</p>
+        </Reveal>
+        <Reveal delay={0.15}>
           <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-center max-w-4xl mx-auto text-gradient-ocean">
             We have everything. <br /> And feel nothing.
           </h2>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mt-8 max-w-2xl mx-auto text-center text-[17px] leading-relaxed text-muted-foreground">
-            The modern human is overstimulated, overconnected, and quietly drifting from
-            themselves. Every notification a small interruption. Every day a louder version
-            of yesterday. Somewhere along the way, the signal became noise.
+            The modern human is overstimulated, overconnected, and slowly drifting away from
+            themselves. Every notification becomes a small interruption. Every day feels like a
+            louder repeat of the last. Somewhere along the way, they have lost touch with who they truly are.
+            This course helps you reconnect with your inner self.
           </p>
         </Reveal>
-
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {items.map((it, i) => (
-            <Reveal key={it.label} delay={i * 0.06}>
-              <div className="group relative overflow-hidden rounded-2xl bg-surface-elevated border border-border/60 p-6 shadow-soft hover:shadow-elevated transition-all duration-500">
-                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-secondary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <it.icon className="h-5 w-5 text-secondary" strokeWidth={1.4} />
-                <p className="mt-6 font-display text-lg text-foreground">{it.label}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
       </div>
     </section>
   );
