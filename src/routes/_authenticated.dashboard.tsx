@@ -24,7 +24,7 @@ const LEVELS: Level[] = [
     id: 2,
     title: "Is Everything Okay?",
     subtitle: "A quiet inquiry inward.",
-    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1779300561/LEVEL_-_2_Is_Everything_Okay__lbuja7.mp4",
+    url: "https://res.cloudinary.com/dzboz4mwb/video/upload/v1780430012/LEVEL_-_2_Is_Everything_Okay_xahmxh.mp4",
     duration: "10:08",
   },
   {
