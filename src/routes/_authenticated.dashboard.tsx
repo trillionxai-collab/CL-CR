@@ -250,7 +250,8 @@ function DashboardPage() {
             const state = stateOf(lvl.id);
             const isCurrent = state === "current";
             const isCompleted = state === "completed";
-            return (
+            const isLocked = state === "locked";
+              return (
               <motion.li
                 key={lvl.id}
                 initial={{ opacity: 0, y: 12 }}
@@ -258,9 +259,28 @@ function DashboardPage() {
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.04 }}
                 className={`flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/5 bg-surface-elevated/85 shadow-soft backdrop-blur ${isCurrent ? "ring-1 ring-warm/20" : ""}`}
+                role="button"
+                tabIndex={0}
+                aria-disabled={isLocked}
+                onClick={() => {
+                  if (!isLocked) setActive(lvl);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+                    e.preventDefault();
+                    if (!isLocked) setActive(lvl);
+                  }
+                }}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-28 h-16 rounded overflow-hidden bg-black flex-shrink-0 relative ${isCurrent ? "scale-[1.02] shadow-[0_18px_60px_-24px_rgba(255,180,120,0.22)]" : ""}`}>
+                  <div
+                    onClick={(e) => {
+                      // prevent the row click from firing twice
+                      e.stopPropagation();
+                      if (!isLocked) setActive(lvl);
+                    }}
+                    className={`w-28 h-16 rounded overflow-hidden bg-black flex-shrink-0 relative ${isCurrent ? "scale-[1.02] shadow-[0_18px_60px_-24px_rgba(255,180,120,0.22)]" : ""} ${isLocked ? "" : "cursor-pointer"}`}
+                  >
                     <video
                       src={lvl.url}
                       muted
@@ -268,7 +288,13 @@ function DashboardPage() {
                       loop
                       preload="metadata"
                       onLoadedMetadata={(e) => handleLoadedMetadata(lvl.id, e)}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover ${isLocked ? "pointer-events-none" : ""}`}
+                      onClick={(e) => {
+                        // open the player instead of toggling inline playback
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!isLocked) setActive(lvl);
+                      }}
                     />
                     <div className="absolute left-2 bottom-1 rounded px-1.5 py-0.5 text-xs font-medium bg-black/60 text-white">{durations[lvl.id] ?? lvl.duration ?? '00:00'}</div>
                     {isCompleted && (
@@ -281,7 +307,9 @@ function DashboardPage() {
                   <div className="min-w-0 flex-1">
                     <button
                       type="button"
-                      onClick={() => setActive(lvl)}
+                      onClick={!isLocked ? () => setActive(lvl) : undefined}
+                      disabled={isLocked}
+                      aria-disabled={isLocked}
                       className="text-left w-full"
                     >
                       <div className="text-[11px] uppercase tracking-[0.24em] text-foreground/60">Level {lvl.id}</div>
