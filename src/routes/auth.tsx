@@ -8,11 +8,9 @@ import { COUNTRIES, CountryCodeSelect, type Country } from "@/components/Country
 export const Route = createFileRoute("/auth")({
   beforeLoad: async () => {
     const user = await getCurrentUser();
-    if (!user) return;
-    if (user.onboarding_completed) {
+    if (user) {
       throw redirect({ to: "/dashboard" });
     }
-    throw redirect({ to: "/onboarding" });
   },
   component: AuthPage,
 });
@@ -79,12 +77,8 @@ function AuthPage() {
         setTimeout(() => otpRefs.current[0]?.focus(), 50);
         return;
       }
-      // Session cookie is set server-side. Route based on onboarding state.
-      if (res.user.onboarding_completed) {
-        navigate({ to: "/dashboard" });
-      } else {
-        navigate({ to: "/onboarding" });
-      }
+      // Session cookie is set server-side. Route directly to dashboard.
+      navigate({ to: "/dashboard" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verification failed.");
       setOtp(["", "", "", ""]);

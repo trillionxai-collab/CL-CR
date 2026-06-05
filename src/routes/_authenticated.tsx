@@ -7,9 +7,6 @@ export const Route = createFileRoute("/_authenticated")({
     if (!user) {
       throw redirect({ to: "/auth" });
     }
-    if (!user.onboarding_completed) {
-      throw redirect({ to: "/onboarding" });
-    }
     return { user };
   },
   component: () => <Outlet />,
