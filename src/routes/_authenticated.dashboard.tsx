@@ -573,6 +573,11 @@ function VideoPlayer({
   const lastObservedVideoTimeRef = useRef<number | null>(null);
   const isSeekingRef = useRef(false);
   const isFlushingRef = useRef(false);
+  const [isWatchThresholdMet, setIsWatchThresholdMet] = useState(false);
+
+  useEffect(() => {
+    setIsWatchThresholdMet(false);
+  }, [level.id]);
 
   const collectPlayedVideoSeconds = useCallback(() => {
     const video = videoRef.current;
@@ -580,6 +585,10 @@ function VideoPlayer({
 
     const currentVideoTime = Number(video.currentTime || 0);
     const previousVideoTime = lastObservedVideoTimeRef.current;
+
+    if (video.duration > 0 && (currentVideoTime / video.duration) >= 0.9) {
+      setIsWatchThresholdMet(true);
+    }
 
     if (
       previousVideoTime != null &&
@@ -755,18 +764,20 @@ function VideoPlayer({
         </div>
 
         <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-foreground/72">
-          <span>{completed ? "Already completed" : "Marks as complete when finished"}</span>
-          <button
-            onClick={() => {
-              pauseTracking();
-              void flushWatchTime(true);
-              onComplete();
-              onClose();
-            }}
-            className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3.5 py-1.5 text-warm transition hover:bg-warm/15"
-          >
-            <Check className="h-3 w-3" /> Mark complete
-          </button>
+          <span>{completed ? "Already completed" : isWatchThresholdMet ? "Ready to complete" : "Marks as complete when finished"}</span>
+          {(completed || isWatchThresholdMet) && (
+            <button
+              onClick={() => {
+                pauseTracking();
+                void flushWatchTime(true);
+                onComplete();
+                onClose();
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-warm/30 bg-warm/10 px-3.5 py-1.5 text-warm transition hover:bg-warm/15"
+            >
+              <Check className="h-3 w-3" /> Mark complete
+            </button>
+          )}
         </div>
       </motion.div>
     </motion.div>
