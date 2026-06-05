@@ -130,6 +130,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (error) return res.status(500).json({ error: "Could not save your journey progress." });
 
+    // Derive the user's current status based on watch times and completed levels
+    let highestWatchedLevel = 0;
+    if (perLevelColumnsAvailable) {
+      for (let i = 1; i <= TRACKED_LEVELS; i++) {
+        const col = `level${i}_watchtime`;
+        const time = upsertObj[col] !== undefined ? upsertObj[col] : Number(existing?.[col] ?? 0);
+        if (time > 0) {
+          highestWatchedLevel = i;
+        }
+      }
+    } else {
+      highestWatchedLevel = Math.max(currentLevel, (levelId && watchedSecondsDelta > 0) ? levelId : 0);
+    }
+
+    let derivedStatus = "new_user";
+    if (currentLevel >= TRACKED_LEVELS) {
+      derivedStatus = "journey_completed";
+    } else if (highestWatchedLevel > currentLevel) {
+      derivedStatus = `level_${highestWatchedLevel}_in_progress`;
+    } else if (currentLevel > 0) {
+      derivedStatus = `level_${currentLevel}_completed`;
+    }
+
+    // Silently update the journey_users table
+    await supabase
+      .from("journey_users")
+      .update({ current_status: derivedStatus })
+      .eq("id", sessionUser.id);
+
     return res.json({
       ok: true,
       current_level: currentLevel,
