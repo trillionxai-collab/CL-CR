@@ -3,7 +3,12 @@ import type { ReactNode } from "react";
 
 const variants: Variants = {
   hidden: { opacity: 0, y: 32, filter: "blur(8px)" },
-  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 1, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 export function Reveal({

@@ -143,8 +143,18 @@ function AuthPage() {
                   className="space-y-5"
                 >
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    <Field label="First Name" value={first} onChange={setFirst} placeholder="Your first name" />
-                    <Field label="Last Name" value={last} onChange={setLast} placeholder="Your last name" />
+                    <Field
+                      label="First Name"
+                      value={first}
+                      onChange={setFirst}
+                      placeholder="Your first name"
+                    />
+                    <Field
+                      label="Last Name"
+                      value={last}
+                      onChange={setLast}
+                      placeholder="Your last name"
+                    />
                   </div>
                   <PhoneField
                     country={country}
@@ -202,15 +212,17 @@ function AuthPage() {
                   </div>
 
                   <p className="text-sm text-foreground/75 leading-relaxed">
-                    We've sent your access code through WhatsApp. Enter the four digits to
-                    cross the threshold.
+                    We've sent your access code through WhatsApp. Enter the four digits to cross the
+                    threshold.
                   </p>
 
                   <div className="flex justify-between gap-3 sm:gap-4">
                     {otp.map((d, i) => (
                       <input
                         key={i}
-                        ref={(el) => { otpRefs.current[i] = el; }}
+                        ref={(el) => {
+                          otpRefs.current[i] = el;
+                        }}
                         value={d}
                         onChange={(e) => setOtpAt(i, e.target.value)}
                         onKeyDown={(e) => onOtpKey(i, e)}
@@ -245,7 +257,8 @@ function AuthPage() {
                   <div className="flex items-center justify-center text-[12px] text-foreground/55">
                     {resendIn > 0 ? (
                       <span>
-                        Didn't receive it? Resend in <span className="text-foreground/80">{resendIn}s</span>
+                        Didn't receive it? Resend in{" "}
+                        <span className="text-foreground/80">{resendIn}s</span>
                       </span>
                     ) : (
                       <button
@@ -259,7 +272,6 @@ function AuthPage() {
                   </div>
                 </motion.div>
               )}
-
             </AnimatePresence>
           </div>
 
@@ -430,10 +442,13 @@ function CinematicBackdrop() {
         animate={{ opacity: [0.2, 0.45, 0.2] }}
         transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 3 }}
       />
-      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay" style={{
-        backgroundImage:
-          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-      }} />
+      <div
+        className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
+        }}
+      />
     </>
   );
 }

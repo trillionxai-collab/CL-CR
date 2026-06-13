@@ -20,18 +20,18 @@ A transformational, cinematic 6-level web experience that guides users through t
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | TanStack Start 1.167 (SSR React) |
-| Routing | TanStack Router (file-based) |
-| Runtime / Deploy | Cloudflare Workers |
-| Build Tool | Vite 7 + `@cloudflare/vite-plugin` |
+| Layer              | Technology                          |
+| ------------------ | ----------------------------------- |
+| Framework          | TanStack Start 1.167 (SSR React)    |
+| Routing            | TanStack Router (file-based)        |
+| Runtime / Deploy   | Cloudflare Workers                  |
+| Build Tool         | Vite 7 + `@cloudflare/vite-plugin`  |
 | Database / Backend | Supabase (PostgreSQL, service role) |
-| Styling | Tailwind CSS 4 + shadcn/ui |
-| Animations | Framer Motion |
-| Forms | React Hook Form + Zod |
-| Package Manager | Bun |
-| SMS / OTP Delivery | n8n webhook |
+| Styling            | Tailwind CSS 4 + shadcn/ui          |
+| Animations         | Framer Motion                       |
+| Forms              | React Hook Form + Zod               |
+| Package Manager    | Bun                                 |
+| SMS / OTP Delivery | n8n webhook                         |
 
 ---
 
@@ -175,12 +175,12 @@ Run the files in `supabase/migrations/` against your database **in chronological
 
 ### Tables
 
-| Table | Purpose |
-|---|---|
-| `journey_users` | User profiles (name, phone, demographics, onboarding flag) |
-| `otp_verifications` | 4-digit OTP codes, 5-min expiry, max 5 attempts |
-| `user_sessions` | Long-lived session tokens (60-day httpOnly cookies) |
-| `journey_progress` | Per-user level, watch time, completion percentage |
+| Table               | Purpose                                                    |
+| ------------------- | ---------------------------------------------------------- |
+| `journey_users`     | User profiles (name, phone, demographics, onboarding flag) |
+| `otp_verifications` | 4-digit OTP codes, 5-min expiry, max 5 attempts            |
+| `user_sessions`     | Long-lived session tokens (60-day httpOnly cookies)        |
+| `journey_progress`  | Per-user level, watch time, completion percentage          |
 
 All tables use **server-only Row Level Security** — no direct access from the browser. All reads/writes go through server functions using the service role key.
 
@@ -202,12 +202,12 @@ All tables use **server-only Row Level Security** — no direct access from the 
 
 ### `wrangler.jsonc` — Cloudflare Workers
 
-| Field | Default | Description |
-|---|---|---|
-| `name` | `rzijtxdgzdfajraztqma` | Worker name / Cloudflare project ID |
-| `main` | `src/server.ts` | Worker entry point |
-| `compatibility_date` | `2025-09-24` | Cloudflare runtime version pin |
-| `compatibility_flags` | `["nodejs_compat"]` | Enables Node.js APIs inside Workers |
+| Field                 | Default                | Description                         |
+| --------------------- | ---------------------- | ----------------------------------- |
+| `name`                | `rzijtxdgzdfajraztqma` | Worker name / Cloudflare project ID |
+| `main`                | `src/server.ts`        | Worker entry point                  |
+| `compatibility_date`  | `2025-09-24`           | Cloudflare runtime version pin      |
+| `compatibility_flags` | `["nodejs_compat"]`    | Enables Node.js APIs inside Workers |
 
 To rename the project, update `name` here and re-run `wrangler deploy`.
 
@@ -217,13 +217,14 @@ Uses `@lovable.dev/vite-tanstack-config` which bundles the TanStack Start plugin
 
 ### `components.json` — shadcn/ui
 
-| Field | Value | Change when... |
-|---|---|---|
-| `style` | `new-york` | You want a different shadcn theme |
-| `baseColor` | `slate` | You want a different base Tailwind color |
-| `aliases.components` | `@/components` | You reorganize the components folder |
+| Field                | Value          | Change when...                           |
+| -------------------- | -------------- | ---------------------------------------- |
+| `style`              | `new-york`     | You want a different shadcn theme        |
+| `baseColor`          | `slate`        | You want a different base Tailwind color |
+| `aliases.components` | `@/components` | You reorganize the components folder     |
 
 To add a new shadcn component:
+
 ```bash
 npx shadcn@latest add <component-name>
 ```
@@ -248,7 +249,7 @@ const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL ?? "https://your-n8n-instanc
 
 ### Video Content (Cloudinary)
 
-Level video URLs are defined in [src/routes/_authenticated.dashboard.tsx](src/routes/_authenticated.dashboard.tsx). Each level entry has the shape:
+Level video URLs are defined in [src/routes/\_authenticated.dashboard.tsx](src/routes/_authenticated.dashboard.tsx). Each level entry has the shape:
 
 ```ts
 {
@@ -268,18 +269,18 @@ Update `videoUrl` with your own Cloudinary (or other CDN) URLs to swap video con
 In [src/lib/session.server.ts](src/lib/session.server.ts), two constants control session lifetime:
 
 ```ts
-const SESSION_DURATION_DAYS = 60;   // Cookie max-age
-const SESSION_REFRESH_DAYS  = 30;   // Slide window: renew if less than this remains
+const SESSION_DURATION_DAYS = 60; // Cookie max-age
+const SESSION_REFRESH_DAYS = 30; // Slide window: renew if less than this remains
 ```
 
 ---
 
 ## Troubleshooting
 
-| Symptom | Likely Cause |
-|---|---|
-| Blank page / 500 after login | Missing `MY_SUPABASE_SERVICE_ROLE_KEY` env var |
-| OTP never arrives | n8n webhook URL unreachable or incorrect |
-| `Cannot find table` errors | Migrations not applied — run `supabase db push` |
+| Symptom                          | Likely Cause                                            |
+| -------------------------------- | ------------------------------------------------------- |
+| Blank page / 500 after login     | Missing `MY_SUPABASE_SERVICE_ROLE_KEY` env var          |
+| OTP never arrives                | n8n webhook URL unreachable or incorrect                |
+| `Cannot find table` errors       | Migrations not applied — run `supabase db push`         |
 | Type errors after adding a route | Run `bun run dev` once to regenerate `routeTree.gen.ts` |
-| Cloudflare deploy fails | `compatibility_date` in `wrangler.jsonc` needs updating |
+| Cloudflare deploy fails          | `compatibility_date` in `wrangler.jsonc` needs updating |

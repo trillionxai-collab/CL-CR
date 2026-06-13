@@ -203,9 +203,9 @@ function DashboardPage() {
           <div className="min-w-0">
             <motion.p
               initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-sm text-[#3aa87a] truncate"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-sm text-[#3aa87a] truncate"
             >
               Welcome back, {firstName(user)}
             </motion.p>
@@ -243,7 +243,9 @@ function DashboardPage() {
       <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 pb-28">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-serif text-lg tracking-tight">Course Levels</h3>
-          <div className="text-sm text-foreground/60">{completed.size}/{TRACKED_LEVELS} completed</div>
+          <div className="text-sm text-foreground/60">
+            {completed.size}/{TRACKED_LEVELS} completed
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -252,7 +254,7 @@ function DashboardPage() {
             const isCurrent = state === "current";
             const isCompleted = state === "completed";
             const isLocked = state === "locked";
-              return (
+            return (
               <motion.li
                 key={lvl.id}
                 initial={{ opacity: 0, y: 12 }}
@@ -297,7 +299,9 @@ function DashboardPage() {
                         if (!isLocked) setActive(lvl);
                       }}
                     />
-                    <div className="absolute left-2 bottom-1 rounded px-1.5 py-0.5 text-xs font-medium bg-black/60 text-white">{durations[lvl.id] ?? lvl.duration ?? '00:00'}</div>
+                    <div className="absolute left-2 bottom-1 rounded px-1.5 py-0.5 text-xs font-medium bg-black/60 text-white">
+                      {durations[lvl.id] ?? lvl.duration ?? "00:00"}
+                    </div>
                     {isCompleted && (
                       <span className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-warm/20 text-warm backdrop-blur">
                         <Check className="h-4 w-4" />
@@ -313,11 +317,13 @@ function DashboardPage() {
                       aria-disabled={isLocked}
                       className="text-left w-full"
                     >
-                      <div className="text-[11px] uppercase tracking-[0.24em] text-foreground/60">Level {lvl.id}</div>
-                        <div className="truncate font-medium text-foreground flex items-center gap-2">
-                          {lvl.title}
-                        </div>
-                        <div className="truncate text-[13px] text-foreground/60">{lvl.subtitle}</div>
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-foreground/60">
+                        Level {lvl.id}
+                      </div>
+                      <div className="truncate font-medium text-foreground flex items-center gap-2">
+                        {lvl.title}
+                      </div>
+                      <div className="truncate text-[13px] text-foreground/60">{lvl.subtitle}</div>
                     </button>
                   </div>
                 </div>
@@ -350,11 +356,7 @@ function DashboardPage() {
             level={active}
             completed={completed.has(active.id)}
             onClose={() => setActive(null)}
-            onPrev={
-              activeIndex > 0
-                ? () => setActive(LEVELS[activeIndex - 1])
-                : undefined
-            }
+            onPrev={activeIndex > 0 ? () => setActive(LEVELS[activeIndex - 1]) : undefined}
             onNext={
               activeIndex >= 0 && activeIndex < LEVELS.length - 1
                 ? () => setActive(LEVELS[activeIndex + 1])
@@ -412,9 +414,7 @@ function AnalyticsCard({
       className="relative overflow-hidden rounded-3xl border border-primary/10 bg-surface-elevated/80 p-6 sm:p-7 shadow-soft backdrop-blur-2xl"
     >
       <div className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full bg-warm/10 blur-3xl" />
-      <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">
-        {label}
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">{label}</p>
       <p className="mt-3 font-serif text-5xl sm:text-6xl leading-none tracking-tight text-[#038a75]">
         {value}
       </p>
@@ -526,11 +526,7 @@ function LevelCard({
   );
 }
 
-function ThumbnailBadge({
-  state,
-}: {
-  state: "completed" | "current" | "unlocked" | "locked";
-}) {
+function ThumbnailBadge({ state }: { state: "completed" | "current" | "unlocked" | "locked" }) {
   if (state === "locked") {
     return (
       <span className="grid h-14 w-14 place-items-center rounded-full border border-primary/10 bg-surface-elevated/85 shadow-soft backdrop-blur">
@@ -557,15 +553,14 @@ function ThumbnailBadge({
   );
 }
 
-function StateChip({
-  state,
-}: {
-  state: "completed" | "current" | "unlocked" | "locked";
-}) {
+function StateChip({ state }: { state: "completed" | "current" | "unlocked" | "locked" }) {
   const map = {
     completed: { label: "Completed", cls: "text-warm/90 border-warm/25 bg-warm/10" },
     current: { label: "In motion", cls: "text-warm border-warm/35 bg-warm/15" },
-    unlocked: { label: "Unlocked", cls: "text-foreground/82 border-primary/10 bg-surface-elevated/85" },
+    unlocked: {
+      label: "Unlocked",
+      cls: "text-foreground/82 border-primary/10 bg-surface-elevated/85",
+    },
     locked: { label: "Locked", cls: "text-foreground/58 border-border/70 bg-surface/70" },
   } as const;
   const { label, cls } = map[state];
@@ -615,16 +610,11 @@ function VideoPlayer({
     const currentVideoTime = Number(video.currentTime || 0);
     const previousVideoTime = lastObservedVideoTimeRef.current;
 
-    if (video.duration > 0 && (currentVideoTime / video.duration) >= 0.9) {
+    if (video.duration > 0 && currentVideoTime / video.duration >= 0.9) {
       setIsWatchThresholdMet(true);
     }
 
-    if (
-      previousVideoTime != null &&
-      !video.paused &&
-      !video.ended &&
-      !isSeekingRef.current
-    ) {
+    if (previousVideoTime != null && !video.paused && !video.ended && !isSeekingRef.current) {
       const delta = currentVideoTime - previousVideoTime;
       if (delta > 0) {
         pendingWatchSecondsRef.current += delta;
@@ -793,7 +783,13 @@ function VideoPlayer({
         </div>
 
         <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-foreground/72">
-          <span>{completed ? "Already completed" : isWatchThresholdMet ? "Ready to complete" : "Marks as complete when finished"}</span>
+          <span>
+            {completed
+              ? "Already completed"
+              : isWatchThresholdMet
+                ? "Ready to complete"
+                : "Marks as complete when finished"}
+          </span>
           {(completed || isWatchThresholdMet) && (
             <button
               onClick={() => {
@@ -849,7 +845,15 @@ function CinematicBackdrop() {
   );
 }
 
-function ProgressRing({ percent, size = 56, stroke = 6 }: { percent: number; size?: number; stroke?: number }) {
+function ProgressRing({
+  percent,
+  size = 56,
+  stroke = 6,
+}: {
+  percent: number;
+  size?: number;
+  stroke?: number;
+}) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
@@ -902,9 +906,10 @@ function ContinueHero({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       style={{
-        backgroundImage: 'url("https://res.cloudinary.com/dzboz4mwb/image/upload/q_auto/f_auto/v1780246710/ancient_widdoom_1_piozb5.png")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage:
+          'url("https://res.cloudinary.com/dzboz4mwb/image/upload/q_auto/f_auto/v1780246710/ancient_widdoom_1_piozb5.png")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
       className="relative overflow-hidden rounded-3xl border border-primary/10 bg-surface-elevated/90 p-5 sm:p-6 shadow-soft backdrop-blur"
     >
@@ -915,9 +920,15 @@ function ContinueHero({
           <div className="relative inline-block w-auto max-w-[92%] sm:max-w-[60%]">
             <div className="absolute inset-0 rounded-2xl bg-white/40 backdrop-blur-sm pointer-events-none" />
             <div className="relative z-10 p-3 sm:p-4">
-              <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">Continue Journey</p>
-              <h3 className="mt-2 font-serif text-2xl text-foreground">{currentTitle ?? "Your journey"}</h3>
-              <p className="mt-2 text-sm text-foreground/60">Pick up where you left off and keep going.</p>
+              <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">
+                Continue Journey
+              </p>
+              <h3 className="mt-2 font-serif text-2xl text-foreground">
+                {currentTitle ?? "Your journey"}
+              </h3>
+              <p className="mt-2 text-sm text-foreground/60">
+                Pick up where you left off and keep going.
+              </p>
 
               <div className="mt-4 flex items-center gap-3">
                 <button
@@ -928,7 +939,9 @@ function ContinueHero({
                   Continue
                 </button>
 
-                <div className="text-sm text-foreground/60">{completedCount}/{TRACKED_LEVELS} completed</div>
+                <div className="text-sm text-foreground/60">
+                  {completedCount}/{TRACKED_LEVELS} completed
+                </div>
               </div>
             </div>
           </div>

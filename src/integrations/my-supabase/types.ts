@@ -1,13 +1,7 @@
 // Hand-authored types for the user's own Supabase project.
 // Mirrors the schema in /schema.sql at the repo root.
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   public: {

@@ -18,7 +18,12 @@ export async function saveJourneyProgress(data: {
   completedLevelIds?: number[];
   watchedSecondsDelta?: number;
   levelId?: number;
-}): Promise<{ ok: true; current_level: number; completion_percentage: number; total_watch_time: number }> {
+}): Promise<{
+  ok: true;
+  current_level: number;
+  completion_percentage: number;
+  total_watch_time: number;
+}> {
   const res = await fetch("/api/journey/progress", {
     method: "POST",
     credentials: "same-origin",

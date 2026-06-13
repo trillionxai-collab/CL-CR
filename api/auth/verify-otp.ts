@@ -9,7 +9,10 @@ import { createSession, buildSetCookieHeader } from "../_lib/session.js";
 
 const VerifySchema = z.object({
   phone: z.string().trim().min(7).max(20),
-  code: z.string().trim().regex(/^\d{4}$/),
+  code: z
+    .string()
+    .trim()
+    .regex(/^\d{4}$/),
 });
 
 function normalizePhone(p: string) {
@@ -52,7 +55,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const latest = latestRows?.[0];
     if (!latest)
-      return res.json({ ok: false, error: "No active access code found. Please request a new one." });
+      return res.json({
+        ok: false,
+        error: "No active access code found. Please request a new one.",
+      });
     if (new Date(latest.expires_at).getTime() < Date.now())
       return res.json({ ok: false, error: "This code has expired. Request a new one." });
     if (latest.attempts >= 5)
@@ -86,8 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .select("id, first_name, last_name, phone_number, onboarding_completed")
     .eq("phone_number", phone)
     .single();
-  if (uErr || !user)
-    return res.json({ ok: false, error: "Could not verify your account." });
+  if (uErr || !user) return res.json({ ok: false, error: "Could not verify your account." });
 
   // Issue session cookie
   const sessionToken = await createSession(user.id, req);

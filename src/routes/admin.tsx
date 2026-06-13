@@ -103,9 +103,7 @@ function AdminDashboard() {
             <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{today}</p>
           </div>
           <div className="hidden text-right sm:block">
-            <div className="font-display text-lg tracking-tight">
-              {data?.stats.totalUsers ?? 0}
-            </div>
+            <div className="font-display text-lg tracking-tight">{data?.stats.totalUsers ?? 0}</div>
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
               Total users
             </div>
@@ -130,9 +128,7 @@ function AdminDashboard() {
             accent
             active={filter === "completions-today"}
             loading={isLoading}
-            onClick={() =>
-              setFilter(filter === "completions-today" ? "all" : "completions-today")
-            }
+            onClick={() => setFilter(filter === "completions-today" ? "all" : "completions-today")}
           />
           <StatCard
             label="Active (24h)"
@@ -441,10 +437,7 @@ function UserDrawer({ user, onClose }: { user: AdminUserRow | null; onClose: () 
                 <Field label="Registered" value={formatDate(user.created_at)} />
                 <Field label="Last Login" value={relativeTime(user.last_login_at)} />
                 <Field label="Last Active" value={relativeTime(user.last_active_at)} />
-                <Field
-                  label="Total Watch Time"
-                  value={formatWatchTime(user.total_watch_time)}
-                />
+                <Field label="Total Watch Time" value={formatWatchTime(user.total_watch_time)} />
               </Section>
             </div>
           </motion.aside>

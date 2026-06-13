@@ -33,7 +33,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const perLevelCols = Array.from({ length: TRACKED_LEVELS }, (_, i) => `level${i + 1}_watchtime`);
   let progressRes = await supabase
     .from("journey_progress")
-    .select(["user_id", "current_level", "completion_percentage", "total_watch_time", "updated_at", ...perLevelCols].join(","));
+    .select(
+      [
+        "user_id",
+        "current_level",
+        "completion_percentage",
+        "total_watch_time",
+        "updated_at",
+        ...perLevelCols,
+      ].join(","),
+    );
 
   if (progressRes.error) {
     // Fallback to minimal progress columns

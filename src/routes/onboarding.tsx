@@ -43,11 +43,21 @@ const GENDERS: { id: Gender; label: string }[] = [
 
 const LIFESTYLES: { id: Lifestyle; label: string; sub: string; Icon: typeof Rocket }[] = [
   { id: "student", label: "Student", sub: "Learning & becoming", Icon: GraduationCap },
-  { id: "working-professional", label: "Working professional", sub: "Building a career", Icon: Briefcase },
+  {
+    id: "working-professional",
+    label: "Working professional",
+    sub: "Building a career",
+    Icon: Briefcase,
+  },
   { id: "entrepreneur", label: "Entrepreneur", sub: "Creating something new", Icon: Rocket },
   { id: "creative", label: "Creative", sub: "Expressing through craft", Icon: Palette },
   { id: "homemaker", label: "Homemaker", sub: "Nurturing the heart of home", Icon: Home },
-  { id: "exploring", label: "Exploring life direction", sub: "In transition, listening inward", Icon: Compass },
+  {
+    id: "exploring",
+    label: "Exploring life direction",
+    sub: "In transition, listening inward",
+    Icon: Compass,
+  },
 ];
 
 function OnboardingPage() {
@@ -132,7 +142,11 @@ function OnboardingPage() {
                 </Section>
 
                 {/* Gender */}
-                <Section index={2} title="How do you identify?" sub="Choose what feels true to you.">
+                <Section
+                  index={2}
+                  title="How do you identify?"
+                  sub="Choose what feels true to you."
+                >
                   <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                     {GENDERS.map((g) => (
                       <SelectChip
@@ -147,7 +161,11 @@ function OnboardingPage() {
                 </Section>
 
                 {/* DOB */}
-                <Section index={3} title="When did your story begin?" sub="Your date of birth helps us shape the rhythm of your journey.">
+                <Section
+                  index={3}
+                  title="When did your story begin?"
+                  sub="Your date of birth helps us shape the rhythm of your journey."
+                >
                   <div className="relative">
                     <CalendarIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-warm/70" />
                     <input
@@ -174,7 +192,9 @@ function OnboardingPage() {
                   >
                     <span
                       className={`relative grid h-6 w-6 shrink-0 place-items-center rounded-full border transition-all duration-500 ${
-                        ready ? "border-warm bg-warm text-warm-foreground" : "border-white/25 bg-white/5"
+                        ready
+                          ? "border-warm bg-warm text-warm-foreground"
+                          : "border-white/25 bg-white/5"
                       }`}
                     >
                       <AnimatePresence>
@@ -415,7 +435,9 @@ function LifestyleCard({
           <Icon className="relative h-4.5 w-4.5" strokeWidth={1.6} />
         </span>
         <div className="min-w-0">
-          <p className={`font-serif text-[15px] leading-snug tracking-tight ${active ? "text-foreground" : "text-foreground/85"}`}>
+          <p
+            className={`font-serif text-[15px] leading-snug tracking-tight ${active ? "text-foreground" : "text-foreground/85"}`}
+          >
             {label}
           </p>
           <p className="mt-0.5 text-[12px] text-foreground/50">{sub}</p>

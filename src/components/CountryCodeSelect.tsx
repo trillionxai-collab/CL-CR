@@ -87,9 +87,7 @@ export function CountryCodeSelect({
     if (!q) return COUNTRIES;
     return COUNTRIES.filter(
       (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.dial.includes(q) ||
-        c.iso.toLowerCase().includes(q),
+        c.name.toLowerCase().includes(q) || c.dial.includes(q) || c.iso.toLowerCase().includes(q),
     );
   }, [query]);
 

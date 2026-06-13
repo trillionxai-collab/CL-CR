@@ -44,10 +44,7 @@ export async function sendOtp(data: {
 
 type VerifyResult = { ok: true; user: SessionUser } | { ok: false; error: string };
 
-export async function verifyOtp(data: {
-  phone: string;
-  code: string;
-}): Promise<VerifyResult> {
+export async function verifyOtp(data: { phone: string; code: string }): Promise<VerifyResult> {
   const res = await apiFetch("/api/auth/verify-otp", {
     method: "POST",
     body: JSON.stringify(data),

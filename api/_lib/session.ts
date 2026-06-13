@@ -38,20 +38,14 @@ function shouldUseSecureCookie(req?: VercelRequest) {
   const isLocalhost = host.includes("localhost") || host.startsWith("127.0.0.1");
 
   const forwardedProto = req.headers["x-forwarded-proto"];
-  const proto = Array.isArray(forwardedProto)
-    ? forwardedProto[0]
-    : forwardedProto ?? "";
+  const proto = Array.isArray(forwardedProto) ? forwardedProto[0] : (forwardedProto ?? "");
   const isHttps = proto.toLowerCase() === "https";
 
   // Secure cookies are blocked on plain HTTP localhost.
   return !isLocalhost || isHttps;
 }
 
-function buildCookieHeaderValue(
-  value: string,
-  maxAgeSeconds: number,
-  req?: VercelRequest,
-) {
+function buildCookieHeaderValue(value: string, maxAgeSeconds: number, req?: VercelRequest) {
   const parts = [
     `${SESSION_COOKIE}=${value}`,
     "HttpOnly",

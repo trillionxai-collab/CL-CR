@@ -9,7 +9,12 @@ const TRACKED_LEVELS = 7;
 
 const SaveSchema = z.object({
   completedLevelIds: z.array(z.number().int().min(1).max(TRACKED_LEVELS)).optional(),
-  watchedSecondsDelta: z.number().int().min(0).max(60 * 60 * 12).optional(),
+  watchedSecondsDelta: z
+    .number()
+    .int()
+    .min(0)
+    .max(60 * 60 * 12)
+    .optional(),
   levelId: z.number().int().min(1).max(TRACKED_LEVELS).optional(),
 });
 
@@ -22,18 +27,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === "GET") {
     // Try to include per-level watch columns if they exist (e.g. level1_watchtime)
-    const perLevelCols = Array.from({ length: TRACKED_LEVELS }, (_, i) => `level${i + 1}_watchtime`);
-    let selectCols = ["current_level", "completion_percentage", "total_watch_time", ...perLevelCols];
+    const perLevelCols = Array.from(
+      { length: TRACKED_LEVELS },
+      (_, i) => `level${i + 1}_watchtime`,
+    );
+    let selectCols = [
+      "current_level",
+      "completion_percentage",
+      "total_watch_time",
+      ...perLevelCols,
+    ];
 
     let data: any = null;
     let error: any = null;
 
     // Attempt to select per-level columns; if the DB doesn't have them, fall back.
-    ({ data, error } = await supabase.from("journey_progress").select(selectCols.join(",")).eq("user_id", sessionUser.id).maybeSingle());
+    ({ data, error } = await supabase
+      .from("journey_progress")
+      .select(selectCols.join(","))
+      .eq("user_id", sessionUser.id)
+      .maybeSingle());
     if (error) {
       // Fallback to the minimal set if the per-level columns are not present.
       selectCols = ["current_level", "completion_percentage", "total_watch_time"];
-      const r = await supabase.from("journey_progress").select(selectCols.join(",")).eq("user_id", sessionUser.id).maybeSingle();
+      const r = await supabase
+        .from("journey_progress")
+        .select(selectCols.join(","))
+        .eq("user_id", sessionUser.id)
+        .maybeSingle();
       data = r.data;
       error = r.error;
     }
@@ -78,8 +99,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     );
 
     // Try fetching per-level columns; fall back if they don't exist.
-    const perLevelCols = Array.from({ length: TRACKED_LEVELS }, (_, i) => `level${i + 1}_watchtime`);
-    let selectCols = ["current_level", "completion_percentage", "total_watch_time", ...perLevelCols];
+    const perLevelCols = Array.from(
+      { length: TRACKED_LEVELS },
+      (_, i) => `level${i + 1}_watchtime`,
+    );
+    let selectCols = [
+      "current_level",
+      "completion_percentage",
+      "total_watch_time",
+      ...perLevelCols,
+    ];
 
     let existing: any = null;
     let existingErr: any = null;
@@ -94,13 +123,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (existingErr) {
       // If the DB doesn't have those columns, fall back to minimal select.
       selectCols = ["current_level", "completion_percentage", "total_watch_time"];
-      const r = await supabase.from("journey_progress").select(selectCols.join(",")).eq("user_id", sessionUser.id).maybeSingle();
+      const r = await supabase
+        .from("journey_progress")
+        .select(selectCols.join(","))
+        .eq("user_id", sessionUser.id)
+        .maybeSingle();
       existing = r.data;
       existingErr = r.error;
       perLevelColumnsAvailable = false;
     }
 
-    if (existingErr) return res.status(500).json({ error: "Could not save your journey progress." });
+    if (existingErr)
+      return res.status(500).json({ error: "Could not save your journey progress." });
 
     const currentLevel = hasCompletedIds
       ? ids.length
@@ -108,7 +142,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const completionPercentage = hasCompletedIds
       ? Math.round((currentLevel / TRACKED_LEVELS) * 10000) / 100
       : Number(existing?.completion_percentage ?? 0);
-    const totalWatchTime = Math.max(0, Number(existing?.total_watch_time ?? 0) + watchedSecondsDelta);
+    const totalWatchTime = Math.max(
+      0,
+      Number(existing?.total_watch_time ?? 0) + watchedSecondsDelta,
+    );
 
     // Prepare the upsert object. If per-level columns exist and a levelId was provided,
     // increment that specific level's watchtime as well.
@@ -126,7 +163,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       upsertObj[col] = Math.max(0, prev + watchedSecondsDelta);
     }
 
-    const { error } = await supabase.from("journey_progress").upsert(upsertObj, { onConflict: "user_id" });
+    const { error } = await supabase
+      .from("journey_progress")
+      .upsert(upsertObj, { onConflict: "user_id" });
 
     if (error) return res.status(500).json({ error: "Could not save your journey progress." });
 
@@ -141,7 +180,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
     } else {
-      highestWatchedLevel = Math.max(currentLevel, (levelId && watchedSecondsDelta > 0) ? levelId : 0);
+      highestWatchedLevel = Math.max(
+        currentLevel,
+        levelId && watchedSecondsDelta > 0 ? levelId : 0,
+      );
     }
 
     let derivedStatus = "new_user";

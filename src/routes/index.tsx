@@ -16,14 +16,20 @@ import {
   Moon,
   CircleDot,
   Lock,
+  Award,
+  Infinity as InfinityIcon,
+  Zap,
+  Gift,
 } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import natureImg from "@/assets/nature.jpg";
 import collectiveImg from "@/assets/collective.jpg";
+import certImg from "@/assets/CLG-CERTIFICATE.png";
 import { Countdown } from "@/components/Countdown";
 import { Reveal } from "@/components/Reveal";
 
-const LOGO_URL = "https://res.cloudinary.com/dzboz4mwb/image/upload/v1779428349/CL-Logo_2_qsyn5h.png";
+const LOGO_URL =
+  "https://res.cloudinary.com/dzboz4mwb/image/upload/v1779428349/CL-Logo_2_qsyn5h.png";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -36,9 +42,8 @@ function Landing() {
       <Hero />
       <Offer />
       <Disconnect />
+      <CertificateAndBenefits />
       <Journey />
-      <Discover />
-      <WhyMatters />
       <Community />
       <FinalCTA />
       <Footer />
@@ -59,10 +64,18 @@ function Nav() {
             <span className="font-display text-[15px] tracking-tight">Reconnection</span>
           </a>
           <nav className="hidden md:flex items-center gap-7 text-[13px] text-muted-foreground">
-            <a href="#journey" className="hover:text-foreground transition">Journey</a>
-            <a href="#discover" className="hover:text-foreground transition">Discover</a>
-            <a href="#why" className="hover:text-foreground transition">Why</a>
-            <a href="#community" className="hover:text-foreground transition">Community</a>
+            <a href="#journey" className="hover:text-foreground transition">
+              Journey
+            </a>
+            <a href="#discover" className="hover:text-foreground transition">
+              Discover
+            </a>
+            <a href="#why" className="hover:text-foreground transition">
+              Why
+            </a>
+            <a href="#community" className="hover:text-foreground transition">
+              Community
+            </a>
           </nav>
           <a
             href="/dashboard"
@@ -105,9 +118,15 @@ function Hero() {
 
       {/* Glow orbs */}
       <div className="absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-secondary/30 blur-[120px] animate-float-slow" />
-      <div className="absolute -right-32 top-1/2 h-96 w-96 rounded-full bg-warm/30 blur-[140px] animate-float-slow" style={{ animationDelay: "2s" }} />
+      <div
+        className="absolute -right-32 top-1/2 h-96 w-96 rounded-full bg-warm/30 blur-[140px] animate-float-slow"
+        style={{ animationDelay: "2s" }}
+      />
 
-      <motion.div style={{ opacity }} className="relative z-10 mx-auto flex min-h-[100svh] max-w-5xl flex-col items-center justify-center px-5 pt-32 pb-20 text-center">
+      <motion.div
+        style={{ opacity }}
+        className="relative z-10 mx-auto flex min-h-[100svh] max-w-5xl flex-col items-center justify-center px-5 pt-32 pb-20 text-center"
+      >
         <motion.img
           src={LOGO_URL}
           alt="The Human Reconnection Journey logo"
@@ -122,8 +141,7 @@ function Hero() {
           transition={{ duration: 1, delay: 0.2 }}
           className="glass-dark inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-warm"
         >
-          <Sparkles className="h-3 w-3" />
-          A Cinematic Awakening
+          <Sparkles className="h-3 w-3" />A Cinematic Awakening
         </motion.div>
 
         <motion.h1
@@ -142,7 +160,7 @@ function Hero() {
           transition={{ duration: 1, delay: 0.9 }}
           className="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-warm/90"
         >
-          A transformational 6-level experience exploring human disconnection, awareness,
+          A transformational 7-level certified course exploring human disconnection, awareness,
           consciousness, healing, and reconnection with self and nature.
         </motion.p>
 
@@ -153,7 +171,9 @@ function Hero() {
           transition={{ duration: 0.9, delay: 1.2 }}
           className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm"
         >
-          <span className="max-w-2xl text-base md:text-lg leading-relaxed text-warm/90 mt-[15px] line-through">₹1,999</span>
+          <span className="max-w-2xl text-base md:text-lg leading-relaxed text-warm/90 mt-[15px] line-through">
+            ₹1,999
+          </span>
           <span className="glass-dark rounded-full px-3.5 py-1.5 text-warm font-medium tracking-wide">
             FREE
           </span>
@@ -193,6 +213,24 @@ function Hero() {
           </a>
         </motion.div>
 
+        {/* Course Highlights Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 1.8 }}
+          className="mt-8 flex flex-wrap justify-center gap-2.5 text-xs text-warm/95"
+        >
+          <span className="glass-dark border border-warm/25 rounded-full px-3 py-1.5 flex items-center gap-1.5 backdrop-blur-md">
+            <Award className="h-3.5 w-3.5 text-warm" /> Verified Certificate Included
+          </span>
+          <span className="glass-dark border border-warm/25 rounded-full px-3 py-1.5 flex items-center gap-1.5 backdrop-blur-md">
+            <InfinityIcon className="h-3.5 w-3.5 text-warm" /> Lifetime Access & Updates
+          </span>
+          <span className="glass-dark border border-warm/25 rounded-full px-3 py-1.5 flex items-center gap-1.5 backdrop-blur-md">
+            <Gift className="h-3.5 w-3.5 text-warm" /> Exclusive Partner Discounts
+          </span>
+        </motion.div>
+
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -229,7 +267,9 @@ function Disconnect() {
           </div>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="mt-4 text-xs uppercase tracking-[0.3em] text-secondary text-center">Thampi Nagarjuna</p>
+          <p className="mt-4 text-xs uppercase tracking-[0.3em] text-secondary text-center">
+            Thampi Nagarjuna
+          </p>
         </Reveal>
         <Reveal delay={0.15}>
           <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-center max-w-4xl mx-auto text-gradient-ocean">
@@ -240,8 +280,8 @@ function Disconnect() {
           <p className="mt-8 max-w-2xl mx-auto text-center text-[17px] leading-relaxed text-muted-foreground">
             The modern human is overstimulated, overconnected, and slowly drifting away from
             themselves. Every notification becomes a small interruption. Every day feels like a
-            louder repeat of the last. Somewhere along the way, they have lost touch with who they truly are.
-            This course helps you reconnect with your inner self.
+            louder repeat of the last. Somewhere along the way, they have lost touch with who they
+            truly are. This course helps you reconnect with your inner self.
           </p>
         </Reveal>
       </div>
@@ -252,17 +292,50 @@ function Disconnect() {
 /* ---------------- JOURNEY ---------------- */
 function Journey() {
   const levels = [
-    { n: "01", t: "A Better Way to Feel", d: "Returning to the body. Breath, posture, presence — the doorway home.", icon: HeartPulse },
-    { n: "02", t: "Is Everything Okay?", d: "The quiet question beneath the noise. Honesty with the nervous system.", icon: Waves },
-    { n: "03", t: "The World Has Changed", d: "How modern life rewrote what it means to be human.", icon: Brain },
-    { n: "04", t: "The Hidden Damage", d: "The invisible wounds we carry without knowing their names.", icon: Eye },
-    { n: "05", t: "The Healing System", d: "Ancient and modern wisdom — the architecture of return.", icon: Sparkles },
-    { n: "06", t: "The Reconnection", d: "Self. Nature. Consciousness. Coming home — fully, finally.", icon: Leaf },
+    {
+      n: "01",
+      t: "A Better Way to Feel",
+      d: "Returning to the body. Breath, posture, presence — the doorway home.",
+      icon: HeartPulse,
+    },
+    {
+      n: "02",
+      t: "Is Everything Okay?",
+      d: "The quiet question beneath the noise. Honesty with the nervous system.",
+      icon: Waves,
+    },
+    {
+      n: "03",
+      t: "The World Has Changed",
+      d: "How modern life rewrote what it means to be human.",
+      icon: Brain,
+    },
+    {
+      n: "04",
+      t: "The Hidden Damage",
+      d: "The invisible wounds we carry without knowing their names.",
+      icon: Eye,
+    },
+    {
+      n: "05",
+      t: "The Healing System",
+      d: "Ancient and modern wisdom — the architecture of return.",
+      icon: Sparkles,
+    },
+    {
+      n: "06",
+      t: "The Reconnection",
+      d: "Self. Nature. Consciousness. Coming home — fully, finally.",
+      icon: Leaf,
+    },
     { n: "07", t: "The Conscious Living", d: "Practice and integration.", icon: Sun },
   ];
 
   return (
-    <section id="journey" className="relative py-32 md:py-44 px-5 bg-gradient-ocean text-primary-foreground overflow-hidden">
+    <section
+      id="journey"
+      className="relative py-32 md:py-44 px-5 bg-gradient-ocean text-primary-foreground overflow-hidden"
+    >
       <div className="absolute inset-0 noise" />
       <div className="absolute top-1/2 -left-40 h-[400px] w-[400px] rounded-full bg-secondary/40 blur-[120px]" />
       <div className="absolute bottom-0 -right-40 h-[400px] w-[400px] rounded-full bg-warm/20 blur-[120px]" />
@@ -273,13 +346,14 @@ function Journey() {
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-center text-gradient-warm">
-            Seven levels. <br />One descent inward.
+            Seven levels. <br />
+            One descent inward.
           </h2>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mt-6 max-w-xl mx-auto text-center text-warm/70 leading-relaxed">
-            A guided architecture from sensation to consciousness — each level deepening
-            what the last one opened.
+            A guided architecture from sensation to consciousness — each level deepening what the
+            last one opened.
           </p>
         </Reveal>
 
@@ -290,16 +364,26 @@ function Journey() {
           <div className="space-y-6 md:space-y-10">
             {levels.map((lv, i) => (
               <Reveal key={lv.n} delay={i * 0.08}>
-                <div className={`md:grid md:grid-cols-2 md:gap-12 items-center ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
-                  <div className={`relative ${i % 2 ? "md:text-left md:pl-12" : "md:text-right md:pr-12"}`}>
+                <div
+                  className={`md:grid md:grid-cols-2 md:gap-12 items-center ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+                >
+                  <div
+                    className={`relative ${i % 2 ? "md:text-left md:pl-12" : "md:text-right md:pr-12"}`}
+                  >
                     <div className="glass-dark rounded-3xl p-7 md:p-9 shadow-elevated group hover:scale-[1.01] transition-transform duration-500">
                       <div className={`flex items-center gap-3 ${i % 2 ? "" : "md:justify-end"}`}>
-                        <span className="font-mono text-xs text-warm/60 tracking-wider">{lv.n}</span>
+                        <span className="font-mono text-xs text-warm/60 tracking-wider">
+                          {lv.n}
+                        </span>
                         <div className="h-px flex-1 bg-warm/20 max-w-[60px]" />
                         <lv.icon className="h-4 w-4 text-warm" strokeWidth={1.4} />
                       </div>
-                      <h3 className="mt-4 font-display text-2xl md:text-3xl font-light text-warm">{lv.t}</h3>
-                      <p className="mt-3 text-warm/70 text-sm md:text-base leading-relaxed">{lv.d}</p>
+                      <h3 className="mt-4 font-display text-2xl md:text-3xl font-light text-warm">
+                        {lv.t}
+                      </h3>
+                      <p className="mt-3 text-warm/70 text-sm md:text-base leading-relaxed">
+                        {lv.d}
+                      </p>
                     </div>
                   </div>
                   <div className="hidden md:flex justify-center relative">
@@ -317,81 +401,97 @@ function Journey() {
   );
 }
 
-/* ---------------- DISCOVER ---------------- */
-function Discover() {
-  const cards = [
-    { t: "The Human System", d: "Body, mind, breath — as one living organism.", icon: Compass },
-    { t: "Nervous System", d: "How safety becomes the foundation of awareness.", icon: Waves },
-    { t: "Consciousness", d: "Beyond identity. Beyond conditioning.", icon: Eye },
-    { t: "Modern Conditioning", d: "The invisible scripts shaping your day.", icon: Brain },
-    { t: "Healing Systems", d: "Ancient and modern wisdom, woven together.", icon: HeartPulse },
-    { t: "Awareness Practice", d: "Subtle, daily, transformational.", icon: Sparkles },
-    { t: "Reconnection with Nature", d: "Remembering you are not separate from it.", icon: Leaf },
-    { t: "Emotional Patterns", d: "Naming, feeling, releasing — without story.", icon: Sun },
+/* ---------------- CERTIFICATE & BENEFITS ---------------- */
+function CertificateAndBenefits() {
+  const benefits = [
+    {
+      title: "Verified Course Certificate",
+      desc: "Receive an official completion certificate signed by Thampi Nagarjuna upon finishing all 7 levels of the journey.",
+      icon: Award,
+    },
+    {
+      title: "Lifetime Benefits Access",
+      desc: "Return to the levels, video content, and daily practices anytime. Your access never expires.",
+      icon: InfinityIcon,
+    },
+    {
+      title: "Future Level Updates",
+      desc: "Any newly added levels, meditations, or bonus resource materials are yours automatically at no extra cost.",
+      icon: Zap,
+    },
+    {
+      title: "Special Wellness Discounts",
+      desc: "Enjoy exclusive, lifetime partner discounts on premium wellness products, wellness-tech, and partner cannabis products.",
+      icon: Gift,
+    },
   ];
 
   return (
-    <section id="discover" className="relative py-32 md:py-44 px-5 bg-background">
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-secondary text-center">What You Will Discover</p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-center text-gradient-ocean">
-            Knowledge that returns <br /> you to yourself.
-          </h2>
-        </Reveal>
+    <section id="why" className="relative py-32 md:py-44 px-5 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-warm" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[500px] w-[500px] bg-gradient-glow rounded-full opacity-40 pointer-events-none" />
 
-        <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-          {cards.map((c, i) => (
-            <Reveal key={c.t} delay={i * 0.05}>
-              <div className="group relative h-full overflow-hidden rounded-2xl bg-card border border-border/60 p-6 shadow-soft hover:shadow-elevated hover:-translate-y-1 transition-all duration-500">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 to-secondary/0 group-hover:from-secondary/5 group-hover:to-warm/10 transition-all duration-700" />
-                <div className="relative">
-                  <div className="h-10 w-10 rounded-xl bg-gradient-ocean grid place-items-center shadow-soft">
-                    <c.icon className="h-4.5 w-4.5 text-primary-foreground" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="mt-5 font-display text-lg text-foreground">{c.t}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.d}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+      <div className="relative mx-auto max-w-6xl">
+        <div className="text-center max-w-3xl mx-auto mb-20 md:mb-28">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.3em] text-secondary">
+              The Credentials & Access
+            </p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <h2 className="mt-5 font-display text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] text-gradient-ocean">
+              A Certified Journey. <br />
+              Lifetime Access & Benefits.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <p className="mt-8 max-w-2xl mx-auto text-[17px] leading-relaxed text-muted-foreground">
+              This is more than a momentary disconnect. It is a systematic 7-level course that gives
+              you lifetime tools, official certification, and exclusive community rewards.
+            </p>
+          </Reveal>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* ---------------- WHY MATTERS ---------------- */
-function WhyMatters() {
-  return (
-    <section id="why" className="relative py-32 md:py-48 px-5 overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={natureImg} alt="" loading="lazy" className="h-full w-full object-cover opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
-      </div>
-      <div className="relative mx-auto max-w-3xl text-center">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-secondary">Why This Journey Matters</p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,4.5rem)] font-light leading-[1.05] text-gradient-ocean">
-            You are not broken. <br /> You are disconnected.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-8 text-lg leading-relaxed text-foreground/80">
-            The exhaustion is not a flaw in you — it is the natural response of a being who
-            has been asked to live in ways the human system was never designed for.
-          </p>
-        </Reveal>
-        <Reveal delay={0.3}>
-          <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-            Reconnection is not a destination. It is a remembering. Of breath. Of body. Of
-            silence. Of the quiet aliveness that has been waiting beneath the noise.
-          </p>
-        </Reveal>
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left: Certificate Preview (Fully visible) */}
+          <div className="lg:col-span-6 flex justify-center items-center">
+            <Reveal delay={0.3}>
+              <motion.div
+                whileHover={{ scale: 1.03, rotateY: 3, rotateX: -3 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="relative rounded-2xl overflow-hidden shadow-elevated border border-border/20"
+              >
+                {/* Reflection shimmer */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-1000 ease-out pointer-events-none z-10" />
+                <img
+                  src={certImg}
+                  alt="Course Completion Certificate"
+                  loading="lazy"
+                  className="w-full h-auto object-contain block max-h-[480px]"
+                />
+              </motion.div>
+            </Reveal>
+          </div>
+
+          {/* Right: Benefits Cards */}
+          <div className="lg:col-span-6 space-y-6 md:space-y-8">
+            {benefits.map((bf, i) => (
+              <Reveal key={bf.title} delay={i * 0.08 + 0.2}>
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-2xl bg-surface-elevated/80 border border-border/40 text-secondary grid place-items-center flex-shrink-0 shadow-soft">
+                    <bf.icon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.2} />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-display text-xl md:text-2xl font-light text-foreground tracking-tight">
+                      {bf.title}
+                    </h3>
+                    <p className="text-[14.5px] text-muted-foreground leading-relaxed">{bf.desc}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -417,7 +517,7 @@ function Offer() {
               </span>
 
               <h2 className="mt-6 font-display text-[clamp(2rem,5vw,3.75rem)] font-light leading-[1.05] text-gradient-warm">
-                A journey worth ₹1,999 <br /> offered today, freely.
+                A 7-level certified course worth ₹1,999 <br /> offered today, freely.
               </h2>
 
               <div className="mt-8 flex items-baseline justify-center gap-4">
@@ -426,8 +526,8 @@ function Offer() {
               </div>
 
               <p className="mt-4 text-warm/80 text-sm max-w-md mx-auto">
-                Access ends when the timer does. Once the doors close, this experience returns
-                to its full price.
+                Get lifetime access, a verified completion certificate, and wellness partner
+                discounts. Access is free today.
               </p>
 
               <div className="mt-10">
@@ -512,12 +612,23 @@ function Community() {
 
           <Reveal delay={0.2}>
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-elevated">
-              <img src={collectiveImg} alt="Thousands gathered together holding candles at dawn" loading="lazy" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover" />
+              <img
+                src={collectiveImg}
+                alt="Thousands gathered together holding candles at dawn"
+                loading="lazy"
+                width={1024}
+                height={1024}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/70 via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-primary-foreground">
                 <div className="flex -space-x-2">
-                  {[0,1,2,3,4].map((i) => (
-                    <div key={i} className="h-8 w-8 rounded-full border-2 border-warm/40 bg-gradient-to-br from-secondary to-warm" style={{ opacity: 0.6 + i*0.08 }} />
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="h-8 w-8 rounded-full border-2 border-warm/40 bg-gradient-to-br from-secondary to-warm"
+                      style={{ opacity: 0.6 + i * 0.08 }}
+                    />
                   ))}
                 </div>
                 <p className="mt-4 font-display text-lg">Thousands have already begun.</p>
@@ -536,7 +647,12 @@ function FinalCTA() {
   return (
     <section className="relative py-32 md:py-48 px-5 overflow-hidden bg-primary-deep text-primary-foreground">
       <div className="absolute inset-0">
-        <img src={heroImg} alt="" loading="lazy" className="h-full w-full object-cover opacity-30 reveal-mask" />
+        <img
+          src={heroImg}
+          alt=""
+          loading="lazy"
+          className="h-full w-full object-cover opacity-30 reveal-mask"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-primary-deep/70 via-primary-deep/60 to-primary-deep" />
       </div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] bg-gradient-glow rounded-full opacity-60" />
@@ -544,12 +660,14 @@ function FinalCTA() {
       <div className="relative mx-auto max-w-4xl text-center">
         <Reveal>
           <h2 className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight text-gradient-warm">
-            You were never <br /> meant to live <em className="italic font-extralight">disconnected.</em>
+            You were never <br /> meant to live{" "}
+            <em className="italic font-extralight">disconnected.</em>
           </h2>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mt-8 max-w-xl mx-auto text-warm/80 text-lg leading-relaxed">
-            Step inside. The journey is quiet, deep, and waiting.
+            Step inside. Get lifetime course access, claim your completion certificate, and begin
+            your descent inward.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
@@ -580,28 +698,60 @@ function Footer() {
               className="h-10 w-auto object-contain mb-4"
             />
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              A quiet movement returning humans to themselves — through awareness, nature,
-              and consciousness.
+              A quiet movement returning humans to themselves — through awareness, nature, and
+              consciousness.
             </p>
           </div>
 
           <div className="md:text-center">
             <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Explore</p>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#journey" className="hover:text-secondary transition">The Journey</a></li>
-              <li><a href="#discover" className="hover:text-secondary transition">Discover</a></li>
-              <li><a href="#why" className="hover:text-secondary transition">Why It Matters</a></li>
-              <li><a href="#community" className="hover:text-secondary transition">Community</a></li>
+              <li>
+                <a href="#journey" className="hover:text-secondary transition">
+                  The Journey
+                </a>
+              </li>
+              <li>
+                <a href="#discover" className="hover:text-secondary transition">
+                  Discover
+                </a>
+              </li>
+              <li>
+                <a href="#why" className="hover:text-secondary transition">
+                  Why It Matters
+                </a>
+              </li>
+              <li>
+                <a href="#community" className="hover:text-secondary transition">
+                  Community
+                </a>
+              </li>
             </ul>
           </div>
 
           <div className="md:text-right">
             <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Connect</p>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#" className="hover:text-secondary transition">Instagram</a></li>
-              <li><a href="#" className="hover:text-secondary transition">YouTube</a></li>
-              <li><a href="#" className="hover:text-secondary transition">WhatsApp</a></li>
-              <li><a href="#" className="hover:text-secondary transition">Telegram</a></li>
+              <li>
+                <a href="#" className="hover:text-secondary transition">
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-secondary transition">
+                  YouTube
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-secondary transition">
+                  WhatsApp
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-secondary transition">
+                  Telegram
+                </a>
+              </li>
             </ul>
           </div>
         </div>
