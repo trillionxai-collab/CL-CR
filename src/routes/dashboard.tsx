@@ -77,12 +77,11 @@ function formatDuration(seconds: number) {
 const STORAGE_KEY = "hrj_completed_levels_v1";
 const TRACKED_LEVELS = LEVELS.length;
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
+export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
 
 function DashboardPage() {
-  const { user } = Route.useRouteContext();
   const navigate = useNavigate();
 
   const [completed, setCompleted] = useState<Set<number>>(new Set());
@@ -170,8 +169,7 @@ function DashboardPage() {
   function stateOf(id: number): "completed" | "current" | "unlocked" | "locked" {
     if (completed.has(id)) return "completed";
     if (id === currentLevelId) return "current";
-    if (id < currentLevelId) return "unlocked";
-    return "locked";
+    return "unlocked";
   }
 
   function handleGoHome() {
@@ -179,54 +177,33 @@ function DashboardPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <CinematicBackdrop />
+    <main className="min-h-screen bg-background text-foreground">
 
       {/* top bar */}
-      <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 pt-4 sm:pt-6">
-        <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-surface-elevated/80 px-3 py-1 text-[10px] uppercase tracking-[0.32em] text-foreground/80 shadow-soft backdrop-blur">
-          <Sparkles className="h-3 w-3 text-warm" /> The Reconnection
+      <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 pt-5 pb-2">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-foreground/70">
+          <Sparkles className="h-3 w-3 text-[#3aa87a]" /> The Reconnection
         </span>
         <button
           onClick={handleGoHome}
           aria-label="Go to homepage"
-          className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-surface-elevated/80 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.22em] text-foreground/80 shadow-soft backdrop-blur transition hover:text-foreground hover:border-primary/20"
+          className="inline-flex items-center gap-2 rounded-full border border-border/50 px-3 py-1.5 text-[11px] text-foreground/60 transition hover:text-foreground"
         >
           <LogOut className="h-3 w-3" />
           <span className="hidden sm:inline">Home</span>
         </button>
       </header>
 
-      {/* Hero (with progress ring) */}
-      <section className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-sm text-[#3aa87a] truncate"
-            >
-              Welcome back, {firstName(user)}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.06 }}
-              className="mt-1 text-xs text-foreground/60"
-            >
-              A gentle nudge — one mindful step at a time.
-            </motion.p>
-          </div>
-
-          <div className="flex-shrink-0 ml-4">
-            <ProgressRing percent={progressPct} size={64} stroke={6} />
-          </div>
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-3xl px-5 pt-4">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs text-foreground/60">A gentle nudge — one mindful step at a time.</p>
+          <ProgressRing percent={progressPct} size={56} stroke={5} />
         </div>
       </section>
 
       {/* Continue Journey hero */}
-      <section className="relative z-10 mx-auto mt-4 w-full max-w-3xl px-5">
+      <section className="mx-auto mt-4 w-full max-w-3xl px-5">
         <ContinueHero
           completedCount={completed.size}
           currentTitle={LEVELS[currentLevelId - 1]?.title}
@@ -240,7 +217,7 @@ function DashboardPage() {
       {/* Today's reflection removed */}
 
       {/* Course list */}
-      <section className="relative z-10 mx-auto mt-6 w-full max-w-3xl px-5 pb-28">
+      <section className="mx-auto mt-6 w-full max-w-3xl px-5 pb-16">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-serif text-lg tracking-tight">Course Levels</h3>
           <div className="text-sm text-foreground/60">
@@ -261,7 +238,7 @@ function DashboardPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.04 }}
-                className={`flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/5 bg-surface-elevated/85 shadow-soft backdrop-blur ${isCurrent ? "ring-1 ring-warm/20" : ""}`}
+                className={`flex items-center justify-between gap-3 p-3 rounded-2xl border bg-background ${isCurrent ? "border-[#3aa87a]/30 ring-1 ring-[#3aa87a]/15" : "border-border/40"}`}
                 role="button"
                 tabIndex={0}
                 aria-disabled={isLocked}
@@ -377,199 +354,6 @@ function DashboardPage() {
         )}
       </AnimatePresence>
     </main>
-  );
-}
-
-/* ───────── pieces ───────── */
-
-function firstName(u: { first_name?: string | null } | undefined) {
-  return (u?.first_name || "Friend").split(" ")[0];
-}
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 5) return "A quiet night";
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  if (h < 21) return "Good evening";
-  return "A quiet night";
-}
-
-function AnalyticsCard({
-  label,
-  value,
-  accent,
-  delay = 0,
-}: {
-  label: string;
-  value: string;
-  accent?: React.ReactNode;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay }}
-      className="relative overflow-hidden rounded-3xl border border-primary/10 bg-surface-elevated/80 p-6 sm:p-7 shadow-soft backdrop-blur-2xl"
-    >
-      <div className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full bg-warm/10 blur-3xl" />
-      <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">{label}</p>
-      <p className="mt-3 font-serif text-5xl sm:text-6xl leading-none tracking-tight text-[#038a75]">
-        {value}
-      </p>
-      {accent}
-    </motion.div>
-  );
-}
-
-function LevelCard({
-  level,
-  state,
-  index,
-  onOpen,
-}: {
-  level: Level;
-  state: "completed" | "current" | "unlocked" | "locked";
-  index: number;
-  onOpen: () => void;
-}) {
-  const locked = state === "locked";
-  const current = state === "current";
-  const completed = state === "completed";
-
-  return (
-    <motion.li
-      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
-    >
-      <button
-        type="button"
-        onClick={locked ? undefined : onOpen}
-        disabled={locked}
-        className={`group relative block w-full overflow-hidden rounded-[28px] border text-left transition-all duration-700 ${
-          current
-            ? "border-warm/45 bg-surface-elevated/85 shadow-[0_0_0_1px_rgba(255,200,140,0.18),0_40px_120px_-30px_rgba(255,200,140,0.25)]"
-            : completed
-              ? "border-primary/10 bg-surface-elevated/78 shadow-soft"
-              : locked
-                ? "border-border/70 bg-surface/60 cursor-not-allowed"
-                : "border-primary/10 bg-surface-elevated/74 shadow-soft hover:border-primary/20 hover:bg-surface-elevated/92"
-        }`}
-      >
-        {current && (
-          <motion.span
-            aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-[28px] bg-gradient-to-br from-warm/25 via-transparent to-transparent"
-            animate={{ opacity: [0.4, 0.85, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-        )}
-
-        <div className="relative flex flex-col gap-0 sm:flex-row">
-          {/* Thumbnail */}
-          <div className="relative aspect-video w-full overflow-hidden sm:aspect-auto sm:h-auto sm:w-[42%] sm:min-h-[180px]">
-            <video
-              src={level.url}
-              muted
-              playsInline
-              preload="metadata"
-              className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${
-                locked ? "blur-md opacity-40 scale-110" : "opacity-90 group-hover:scale-[1.04]"
-              }`}
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary-deep/85 via-primary-deep/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/80 via-transparent to-transparent" />
-
-            {/* state badge over thumbnail */}
-            <div className="absolute inset-0 grid place-items-center">
-              <ThumbnailBadge state={state} />
-            </div>
-
-            <span className="absolute left-4 top-4 font-serif text-[11px] uppercase tracking-[0.32em] text-warm/85">
-              Level 0{level.id}
-            </span>
-          </div>
-
-          {/* Text */}
-          <div className="flex flex-1 flex-col justify-center gap-2 p-5 sm:p-7">
-            <div className="flex items-center gap-2">
-              <StateChip state={state} />
-            </div>
-            <h3
-              className={`font-serif text-2xl sm:text-3xl leading-[1.1] tracking-tight ${
-                locked ? "text-foreground/58" : "text-foreground"
-              }`}
-            >
-              {level.title}
-            </h3>
-            <p
-              className={`text-[13.5px] leading-relaxed ${
-                locked ? "text-foreground/48" : "text-foreground/74"
-              }`}
-            >
-              {level.subtitle}
-            </p>
-
-            {!locked && (
-              <div className="mt-3 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-warm/85">
-                {completed ? "Watch again" : current ? "Enter the chapter" : "Open chapter"}
-                <span className="inline-block h-px w-6 bg-warm/60 transition-all group-hover:w-10" />
-              </div>
-            )}
-          </div>
-        </div>
-      </button>
-    </motion.li>
-  );
-}
-
-function ThumbnailBadge({ state }: { state: "completed" | "current" | "unlocked" | "locked" }) {
-  if (state === "locked") {
-    return (
-      <span className="grid h-14 w-14 place-items-center rounded-full border border-primary/10 bg-surface-elevated/85 shadow-soft backdrop-blur">
-        <Lock className="h-5 w-5 text-foreground/70" strokeWidth={1.6} />
-      </span>
-    );
-  }
-  if (state === "completed") {
-    return (
-      <span className="grid h-14 w-14 place-items-center rounded-full border border-warm/30 bg-warm/15 text-warm backdrop-blur">
-        <Check className="h-6 w-6" strokeWidth={2} />
-      </span>
-    );
-  }
-  return (
-    <span className="relative grid h-16 w-16 place-items-center rounded-full border border-warm/40 bg-warm/15 text-warm backdrop-blur transition-transform duration-500 group-hover:scale-105">
-      <motion.span
-        className="absolute inset-0 rounded-full bg-warm/30 blur-xl"
-        animate={{ opacity: [0.4, 0.85, 0.4], scale: [1, 1.15, 1] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <Play className="relative h-6 w-6 translate-x-0.5" fill="currentColor" strokeWidth={0} />
-    </span>
-  );
-}
-
-function StateChip({ state }: { state: "completed" | "current" | "unlocked" | "locked" }) {
-  const map = {
-    completed: { label: "Completed", cls: "text-warm/90 border-warm/25 bg-warm/10" },
-    current: { label: "In motion", cls: "text-warm border-warm/35 bg-warm/15" },
-    unlocked: {
-      label: "Unlocked",
-      cls: "text-foreground/82 border-primary/10 bg-surface-elevated/85",
-    },
-    locked: { label: "Locked", cls: "text-foreground/58 border-border/70 bg-surface/70" },
-  } as const;
-  const { label, cls } = map[state];
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.24em] backdrop-blur ${cls}`}
-    >
-      {label}
-    </span>
   );
 }
 
@@ -809,42 +593,6 @@ function VideoPlayer({
   );
 }
 
-/* ───────── backdrop ───────── */
-
-function CinematicBackdrop() {
-  return (
-    <>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,210,160,0.10),transparent_60%),radial-gradient(ellipse_at_bottom,rgba(120,180,200,0.10),transparent_60%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-primary-deep/40" />
-      <motion.div
-        aria-hidden
-        className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-warm/20 blur-[120px]"
-        animate={{ opacity: [0.35, 0.6, 0.35], scale: [1, 1.08, 1] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        aria-hidden
-        className="absolute bottom-[-160px] right-[-80px] h-[460px] w-[460px] rounded-full bg-primary/30 blur-[140px]"
-        animate={{ opacity: [0.25, 0.5, 0.25], scale: [1, 1.12, 1] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-      />
-      <motion.div
-        aria-hidden
-        className="absolute top-1/3 left-[-120px] h-[360px] w-[360px] rounded-full bg-secondary/20 blur-[120px]"
-        animate={{ opacity: [0.2, 0.45, 0.2] }}
-        transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' /></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-        }}
-      />
-    </>
-  );
-}
-
 function ProgressRing({
   percent,
   size = 56,
@@ -902,52 +650,33 @@ function ContinueHero({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.5 }}
       style={{
         backgroundImage:
           'url("https://res.cloudinary.com/dzboz4mwb/image/upload/q_auto/f_auto/v1780246710/ancient_widdoom_1_piozb5.png")',
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="relative overflow-hidden rounded-3xl border border-primary/10 bg-surface-elevated/90 p-5 sm:p-6 shadow-soft backdrop-blur"
+      className="relative overflow-hidden rounded-2xl bg-background p-5"
     >
-      <div className="absolute inset-0 bg-white/10" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-warm/8 via-primary-deep/6 to-transparent blur-xl" />
-      <div className="relative z-10 flex items-center gap-6">
-        <div className="flex-1">
-          <div className="relative inline-block w-auto max-w-[92%] sm:max-w-[60%]">
-            <div className="absolute inset-0 rounded-2xl bg-white/40 backdrop-blur-sm pointer-events-none" />
-            <div className="relative z-10 p-3 sm:p-4">
-              <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/68">
-                Continue Journey
-              </p>
-              <h3 className="mt-2 font-serif text-2xl text-foreground">
-                {currentTitle ?? "Your journey"}
-              </h3>
-              <p className="mt-2 text-sm text-foreground/60">
-                Pick up where you left off and keep going.
-              </p>
-
-              <div className="mt-4 flex items-center gap-3">
-                <button
-                  onClick={onContinue}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#3aa87a] bg-[#3aa87a] px-3 py-2 text-white shadow-soft"
-                >
-                  <Play className="h-4 w-4" />
-                  Continue
-                </button>
-
-                <div className="text-sm text-foreground/60">
-                  {completedCount}/{TRACKED_LEVELS} completed
-                </div>
-              </div>
-            </div>
+      <div className="relative inline-block max-w-full rounded-xl bg-white/90 p-4">
+        <p className="text-[10px] uppercase tracking-[0.28em] text-foreground/50">Continue Journey</p>
+        <h3 className="mt-1.5 font-serif text-xl text-foreground">{currentTitle ?? "Your journey"}</h3>
+        <p className="mt-1 text-sm text-foreground/60">Pick up where you left off and keep going.</p>
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            onClick={onContinue}
+            className="inline-flex items-center gap-2 rounded-full border border-[#3aa87a] bg-[#3aa87a] px-3 py-2 text-sm text-white"
+          >
+            <Play className="h-4 w-4" />
+            Continue
+          </button>
+          <div className="text-sm text-foreground/50">
+            {completedCount}/{TRACKED_LEVELS} completed
           </div>
         </div>
-
-        {/* right column removed - progress moved to top hero */}
       </div>
     </motion.div>
   );

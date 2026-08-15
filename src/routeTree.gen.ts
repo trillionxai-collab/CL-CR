@@ -10,18 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated.progress'
 import { Route as AuthenticatedJourneyRouteImport } from './routes/_authenticated.journey'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedWatchIdRouteImport } from './routes/_authenticated.watch.$id'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -53,11 +58,6 @@ const AuthenticatedJourneyRoute = AuthenticatedJourneyRouteImport.update({
   path: '/journey',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedWatchIdRoute = AuthenticatedWatchIdRouteImport.update({
   id: '/watch/$id',
   path: '/watch/$id',
@@ -68,8 +68,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/watch/$id': typeof AuthenticatedWatchIdRoute
@@ -78,8 +78,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/watch/$id': typeof AuthenticatedWatchIdRoute
@@ -90,8 +90,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/journey': typeof AuthenticatedJourneyRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/watch/$id': typeof AuthenticatedWatchIdRoute
@@ -102,8 +102,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/onboarding'
     | '/dashboard'
+    | '/onboarding'
     | '/journey'
     | '/progress'
     | '/watch/$id'
@@ -112,8 +112,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/onboarding'
     | '/dashboard'
+    | '/onboarding'
     | '/journey'
     | '/progress'
     | '/watch/$id'
@@ -123,8 +123,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/admin'
     | '/auth'
+    | '/dashboard'
     | '/onboarding'
-    | '/_authenticated/dashboard'
     | '/_authenticated/journey'
     | '/_authenticated/progress'
     | '/_authenticated/watch/$id'
@@ -135,6 +135,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
   OnboardingRoute: typeof OnboardingRoute
 }
 
@@ -145,6 +146,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -189,13 +197,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJourneyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/watch/$id': {
       id: '/_authenticated/watch/$id'
       path: '/watch/$id'
@@ -207,14 +208,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedJourneyRoute: typeof AuthenticatedJourneyRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedWatchIdRoute: typeof AuthenticatedWatchIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedJourneyRoute: AuthenticatedJourneyRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedWatchIdRoute: AuthenticatedWatchIdRoute,
@@ -229,6 +228,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
   OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
