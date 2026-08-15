@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Play, Check, Sparkles, X, LogOut } from "lucide-react";
+import { Lock, Play, Check, X, LogOut } from "lucide-react";
 import { getJourneyProgress, saveJourneyProgress } from "@/lib/journey.functions";
+import ecoherbLogo from "@/assets/ecoherb.png";
 
 type Level = {
   id: number;
@@ -181,9 +182,10 @@ function DashboardPage() {
 
       {/* top bar */}
       <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 pt-5 pb-2">
-        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-foreground/70">
-          <Sparkles className="h-3 w-3 text-[#3aa87a]" /> The Reconnection
-        </span>
+        <div className="flex items-center gap-3">
+          <img src={ecoherbLogo} alt="Ecoherb Health and Ayur" className="h-10 w-10 object-contain" />
+          <h1 className="font-serif text-lg tracking-tight text-foreground">Ecoherb Health and Ayur</h1>
+        </div>
         <button
           onClick={handleGoHome}
           aria-label="Go to homepage"
@@ -197,7 +199,7 @@ function DashboardPage() {
       {/* Hero */}
       <section className="mx-auto w-full max-w-3xl px-5 pt-4">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-xs text-foreground/60">A gentle nudge — one mindful step at a time.</p>
+          <p className="text-xs text-foreground/60">A guided video journey from Ecoherb Health and Ayur, supporting your wellbeing through reflection, healing, and reconnection.</p>
           <ProgressRing percent={progressPct} size={56} stroke={5} />
         </div>
       </section>
