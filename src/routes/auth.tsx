@@ -7,10 +7,7 @@ import { COUNTRIES, CountryCodeSelect, type Country } from "@/components/Country
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: async () => {
-    const user = await getCurrentUser();
-    if (user) {
-      throw redirect({ to: "/dashboard" });
-    }
+    throw redirect({ to: "/dashboard" });
   },
   component: AuthPage,
 });

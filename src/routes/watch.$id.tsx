@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Check, MessageCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import tnImage from "@/assets/TN1.webp";
 import { LEVELS, TRACKED_LEVELS } from "@/lib/levels";
 import { useJourneyState } from "@/lib/useJourneyState";
 import { useVideoWatchTracking } from "@/hooks/useVideoWatchTracking";
 import { saveJourneyProgress } from "@/lib/journey.functions";
 
-export const Route = createFileRoute("/_authenticated/watch/$id")({
+export const Route = createFileRoute("/watch/$id")({
   component: WatchPage,
 });
 
@@ -169,28 +170,31 @@ function WatchPage() {
       {/* Personal Guidance */}
       <section className="mt-7 px-5">
         <div className="flex items-center gap-3 rounded-2xl border border-border/40 bg-surface/60 p-3 min-h-[190px] sm:min-h-[200px]">
-          <div className="w-[28%] h-full min-h-[150px] flex-shrink-0 rounded-xl bg-gradient-to-br from-[#3aa87a]/25 to-primary/20 grid place-items-center">
-            <MessageCircle className="h-7 w-7 text-[#3aa87a]" />
+          <div className="w-[28%] flex-shrink-0 self-stretch rounded-xl overflow-hidden">
+            <img src={tnImage} alt="Ayurveda expert" className="h-full w-full object-cover" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/50">
-              Personal Guidance
-            </p>
+            <p className="text-[9px] uppercase tracking-[0.24em] text-[#3aa87a] font-medium">Online Consultation</p>
             <p className="mt-1.5 font-serif text-base leading-snug text-foreground">
-              Talk to our Ayurveda expert about your journey
+              Awaken Your Life with the Magic of Cannabis
             </p>
             <p className="mt-1.5 text-xs text-foreground/55">
-              A one-on-one call to personalise your healing path.
+              A one-on-one session with our ayurvedic expert Sree Thampi Nagarjuna to guide your path of healing.
             </p>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="rounded px-1.5 py-0.5 text-[9px] font-medium bg-[#3aa87a]/15 text-[#3aa87a] uppercase tracking-wide">Malayalam</span>
+              <span className="rounded px-1.5 py-0.5 text-[9px] font-medium bg-[#3aa87a]/15 text-[#3aa87a] uppercase tracking-wide">English</span>
+            </div>
           </div>
           <div className="w-[22%] flex-shrink-0 flex flex-col items-end justify-center gap-2">
-            <p className="text-sm font-semibold text-foreground">₹499</p>
-            <button
-              type="button"
-              className="rounded-full bg-[#3aa87a] px-3 py-1.5 text-xs font-medium text-white"
+            <a
+              href="https://rzp.io/rzp/5YGdwxZ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-[#3aa87a] px-3 py-1.5 text-xs font-medium text-white whitespace-nowrap"
             >
-              Book
-            </button>
+              Book Now
+            </a>
           </div>
         </div>
       </section>

@@ -8,10 +8,22 @@ export type JourneyProgress = {
   level_watch_times?: number[];
 };
 
+const EMPTY_PROGRESS: JourneyProgress = {
+  completedLevelIds: [],
+  current_level: 1,
+  completion_percentage: 0,
+  total_watch_time: 0,
+};
+
 export async function getJourneyProgress(): Promise<JourneyProgress> {
   const res = await fetch("/api/journey/progress", { credentials: "same-origin" });
-  if (!res.ok) throw new Error("Could not load your journey progress.");
-  return res.json() as Promise<JourneyProgress>;
+  if (!res.ok) return EMPTY_PROGRESS;
+  try {
+    return (await res.json()) as JourneyProgress;
+  } catch {
+    // Non-JSON response (e.g. running `vite dev` without the API functions).
+    return EMPTY_PROGRESS;
+  }
 }
 
 export async function saveJourneyProgress(data: {

@@ -57,8 +57,13 @@ export async function verifyOtp(data: { phone: string; code: string }): Promise<
 export async function getCurrentUser(): Promise<SessionUser | null> {
   const res = await apiFetch("/api/auth/me");
   if (!res.ok) return null;
-  const data = (await res.json()) as { user: SessionUser | null };
-  return data.user;
+  try {
+    const data = (await res.json()) as { user: SessionUser | null };
+    return data.user;
+  } catch {
+    // Non-JSON response (e.g. running `vite dev` without the API functions) — treat as signed out.
+    return null;
+  }
 }
 
 /* ---------- saveOnboarding ---------- */
